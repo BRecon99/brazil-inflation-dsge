@@ -169,3 +169,4 @@ https://docs.github.com/en/migrations/importing-source-code/using-the-command-li
 The file in `dynare/baseline/` is the frozen working model. Do not overwrite it while estimating parameters.
 
 When the estimation stage begins, work in `dynare/estimation/`.
+"# brazil-inflation-dsge" 
