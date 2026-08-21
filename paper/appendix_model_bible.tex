@@ -1,0 +1,3529 @@
+
+%===============================================================================
+% APPENDIX
+% COMPLETE DERIVATION, ECONOMIC INTERPRETATION, AND STATISTICAL GUIDE
+% BRAZIL 1964--1980 DSGE MODEL
+%
+% Paste this file after \appendix in the main paper, or keep the \appendix
+% command below if this is the first appendix.
+%
+% This paste-ready version requires only amsmath and amssymb in the main preamble.
+% Add BEFORE \begin{document} if your main file does not already contain them:
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+%===============================================================================
+
+\appendix
+\section{Complete Derivation and Guide to the Brazil 1964--1980 DSGE Model}
+\label{app:model_bible}
+
+\subsection{Purpose of this Appendix}
+\label{app:purpose}
+
+This appendix is the complete mathematical and economic guide to the baseline
+Brazilian model used in the paper. Its purpose is to make explicit every step
+that is compressed in the main text and in the Dynare implementation. In
+particular, it distinguishes carefully among:
+
+\begin{enumerate}
+    \item equations that follow from private optimization;
+    \item accounting identities;
+    \item market-clearing conditions;
+    \item policy rules;
+    \item stochastic processes; and
+    \item semi-structural linear approximations introduced deliberately for
+    empirical tractability.
+\end{enumerate}
+
+This distinction is essential. Not every equation in a DSGE model is an
+optimality condition. The household Euler equation, for example, follows from a
+first-order condition. The CPI relation is an identity. The Taylor-type
+interest-rate rule is a policy specification. The country-risk equation is a
+reduced-form pricing wedge. Treating these objects as though they had the same
+logical status would obscure both the economics and the econometrics.
+
+The appendix reproduces \emph{exactly} the 26-equation linear system used in the
+successfully running baseline Dynare file. No household foreign bond is added.
+No output-gap term is added to monetary policy. No direct oil shock is added to
+the Phillips curve. Taxes do not respond endogenously to debt. Public
+investment remains separate from ordinary government consumption. External
+debt is consolidated public-sector foreign debt.
+
+%-------------------------------------------------------------------------------
+\subsection{Notation, Units, and Timing}
+\label{app:notation}
+%-------------------------------------------------------------------------------
+
+\subsubsection{Levels, log deviations, and level deviations}
+
+Upper-case letters denote economic variables in levels. For a strictly positive
+variable \(X_t\) with deterministic steady state \(\bar X>0\), define its
+log-deviation by
+
+\begin{equation}
+\widehat{x}_t
+\equiv
+\log\left(\frac{X_t}{\bar X}\right)
+\simeq
+\frac{X_t-\bar X}{\bar X}.
+\label{eq:hatdefinition}
+\end{equation}
+
+In the Dynare code, hats are suppressed. Thus \(c_t\), \(y_t\), \(m_t\),
+\(s_t\), and so forth should be read as log deviations unless stated
+otherwise.
+
+Five variables are deliberately \emph{not} treated as ordinary log deviations:
+
+\begin{align}
+tb_t &:\quad \text{trade-balance deviation as a fraction of steady-state GDP},\\
+d_t  &:\quad \text{external public-debt/GDP deviation},\\
+b_t  &:\quad \text{domestic public-debt/GDP deviation},\\
+sg_t &:\quad \text{seigniorage/GDP deviation},\\
+\tau_t &:\quad \text{tax-revenue/GDP deviation}.
+\end{align}
+
+The reason is economic as well as mathematical. In particular, the steady-state
+trade balance can be zero, so \(\log(TB_t/\overline{TB})\) would be undefined.
+Consequently, \(tb_t\) is linearized in levels relative to steady-state output.
+
+Inflation rates and interest rates,
+
+\[
+\pi_t,\quad \pi_{H,t},\quad \pi_{F,t}^{*},\quad
+i_t,\quad i_t^{*},\quad rp_t,
+\]
+
+are quarterly \emph{rate deviations in decimal units}. For these variables,
+\(0.01\) means one percentage point at quarterly frequency.
+
+\subsubsection{Expectations and timing}
+
+The operator \(\mathbb E_t[\cdot]\) denotes the mathematical expectation
+conditional on information available at date \(t\).
+
+The Dynare notation maps into the equations as
+
+\[
+x(+1)\equiv \mathbb E_t x_{t+1},
+\qquad
+x(-1)\equiv x_{t-1}.
+\]
+
+The model contains both predetermined and forward-looking variables. Debt
+stocks, lagged inflation, lagged interest rates, and persistent exogenous
+processes carry information from the past. Consumption, domestic inflation, and
+the exchange rate contain forward-looking components.
+
+%-------------------------------------------------------------------------------
+\subsection{A Log-Linearization Toolkit}
+\label{app:linearization_toolkit}
+%-------------------------------------------------------------------------------
+
+Before deriving the model, it is useful to collect the approximations used
+repeatedly.
+
+\subsubsection{First-order Taylor approximation}
+
+For a differentiable function \(F(X)\),
+
+\begin{equation}
+F(X_t)
+\simeq
+F(\bar X)
++
+F_X(\bar X)(X_t-\bar X).
+\end{equation}
+
+For a positive variable represented as \(X_t=\bar X e^{x_t}\),
+
+\begin{equation}
+X_t
+\simeq
+\bar X(1+x_t).
+\end{equation}
+
+\subsubsection{Products}
+
+If \(Z_t=X_tY_t\), then to first order
+
+\begin{equation}
+z_t=x_t+y_t.
+\end{equation}
+
+Cross-products of deviations such as \(x_ty_t\) are second-order terms and are
+discarded in a first-order solution.
+
+\subsubsection{Ratios}
+
+If \(Z_t=X_t/Y_t\), then
+
+\begin{equation}
+z_t=x_t-y_t.
+\end{equation}
+
+\subsubsection{Weighted sums}
+
+Suppose
+
+\[
+Y_t=X_{1,t}+X_{2,t}+\cdots+X_{J,t}
+\]
+
+and let
+
+\[
+\omega_j=\frac{\bar X_j}{\bar Y}.
+\]
+
+Then the first-order approximation is
+
+\begin{equation}
+y_t
+=
+\sum_{j=1}^{J}\omega_j x_{j,t}.
+\label{eq:sharelinearization}
+\end{equation}
+
+This rule generates the goods-market-clearing equation and the trade-balance
+equation used in Dynare.
+
+\subsubsection{Why constants disappear}
+
+A linear model is written in deviations from a deterministic steady state.
+Therefore steady-state constants vanish after subtracting the steady-state
+equation. A linear debt equation can consequently contain a nonzero benchmark
+debt ratio \(\bar d\) even though the Dynare variable \(d_t\) itself has
+steady-state value zero: \(d_t\) is the \emph{deviation} around \(\bar d\).
+
+%===============================================================================
+\subsection{Households}
+\label{app:households}
+%===============================================================================
+
+\subsubsection{Preferences}
+
+The representative household has expected lifetime utility
+
+\begin{equation}
+\mathcal U_0
+=
+\mathbb E_0
+\sum_{t=0}^{\infty}
+\beta^t
+\left[
+\frac{C_t^{1-\sigma}}{1-\sigma}
+-
+\chi\frac{N_t^{1+\varphi}}{1+\varphi}
++
+\zeta_m\frac{(M_t/P_t)^{1-\nu}}{1-\nu}
+\right],
+\label{eq:utility_level}
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item \(0<\beta<1\) is the discount factor;
+    \item \(\sigma>0\) is the coefficient of relative risk aversion and the
+    inverse intertemporal elasticity of substitution under CRRA utility;
+    \item \(\varphi>0\) is the inverse Frisch elasticity parameter;
+    \item \(M_t/P_t\) denotes real money balances;
+    \item \(\nu>0\) governs the curvature of liquidity services.
+\end{itemize}
+
+Money enters utility solely to provide a coherent demand for real balances.
+It is not used to impose an ad hoc relation in which inflation directly causes
+consumption.
+
+\subsubsection{Household nominal budget constraint}
+
+Households consume, hold money, and buy one-period domestic public debt:
+
+\begin{equation}
+P_tC_t+M_t+Q_t^dB_{t+1}
+=
+W_tN_t+\Pi_t-T_t^h+TR_t+M_{t-1}+B_t.
+\label{eq:hh_budget_level}
+\end{equation}
+
+The object \(B_{t+1}\) is a one-period nominal bond purchased at price
+\(Q_t^d\) and paying one unit of domestic currency at \(t+1\). Hence
+
+\begin{equation}
+Q_t^d=\frac{1}{1+i_t^{\mathrm{lev}}},
+\label{eq:bond_price}
+\end{equation}
+
+where \(i_t^{\mathrm{lev}}\) denotes the net nominal rate in levels.
+
+There is no household foreign bond. This is a defining feature of the final
+model.
+
+\subsubsection{The household Lagrangian}
+
+Let \(\Lambda_t\) be the multiplier on the nominal budget constraint. The
+Lagrangian is
+
+\begin{align}
+\mathcal L
+=
+\mathbb E_0
+\sum_{t=0}^{\infty}
+\beta^t
+\Bigg\{&
+\frac{C_t^{1-\sigma}}{1-\sigma}
+-
+\chi\frac{N_t^{1+\varphi}}{1+\varphi}
++
+\zeta_m\frac{(M_t/P_t)^{1-\nu}}{1-\nu}
+\nonumber\\
+&+
+\Lambda_t
+\left[
+W_tN_t+\Pi_t-T_t^h+TR_t+M_{t-1}+B_t
+-P_tC_t-M_t-Q_t^dB_{t+1}
+\right]
+\Bigg\}.
+\label{eq:hh_lagrangian}
+\end{align}
+
+\subsubsection{Consumption first-order condition}
+
+Differentiating with respect to \(C_t\),
+
+\begin{equation}
+C_t^{-\sigma}
+=
+\Lambda_tP_t,
+\label{eq:foc_c}
+\end{equation}
+
+or
+
+\begin{equation}
+\Lambda_t
+=
+\frac{C_t^{-\sigma}}{P_t}.
+\label{eq:lambda}
+\end{equation}
+
+Economically, \(\Lambda_t\) is the marginal utility value of one additional
+unit of nominal wealth.
+
+\subsubsection{Labor-supply first-order condition}
+
+Differentiating with respect to \(N_t\),
+
+\begin{equation}
+\chi N_t^{\varphi}
+=
+\Lambda_tW_t.
+\end{equation}
+
+Using equation \eqref{eq:lambda},
+
+\begin{equation}
+\frac{W_t}{P_t}
+=
+\chi N_t^\varphi C_t^\sigma.
+\label{eq:labor_supply_level}
+\end{equation}
+
+Taking logs and removing constants gives
+
+\begin{equation}
+\boxed{
+w_t-p_t
+=
+\sigma c_t+\varphi n_t.
+}
+\label{eq:labor_supply_linear}
+\end{equation}
+
+This condition is not entered as a separate Dynare equation because it is
+substituted directly into the marginal-cost equation. That is why the
+26-equation system contains no stand-alone wage equation.
+
+\subsubsection{Domestic-bond first-order condition}
+
+Differentiating with respect to \(B_{t+1}\) gives
+
+\begin{equation}
+\Lambda_tQ_t^d
+=
+\beta\mathbb E_t\Lambda_{t+1}.
+\end{equation}
+
+Substituting equation \eqref{eq:lambda},
+
+\begin{equation}
+Q_t^d
+=
+\beta
+\mathbb E_t
+\left[
+\left(\frac{C_{t+1}}{C_t}\right)^{-\sigma}
+\frac{P_t}{P_{t+1}}
+\right].
+\label{eq:bond_euler_price}
+\end{equation}
+
+Since \(Q_t^d=1/(1+i_t^{\mathrm{lev}})\),
+
+\begin{equation}
+1
+=
+\beta(1+i_t^{\mathrm{lev}})
+\mathbb E_t
+\left[
+\left(\frac{C_{t+1}}{C_t}\right)^{-\sigma}
+\frac{1}{\Pi_{t+1}}
+\right],
+\label{eq:euler_exact}
+\end{equation}
+
+where
+
+\[
+\Pi_{t+1}\equiv\frac{P_{t+1}}{P_t}.
+\]
+
+\subsubsection{Log-linear Euler equation}
+
+Take a first-order approximation of equation \eqref{eq:euler_exact} around the
+steady state. Constants cancel by the steady-state Euler condition. The
+result is
+
+\begin{equation}
+\sigma
+\left(
+c_t-\mathbb E_tc_{t+1}
+\right)
+=
+i_t-\mathbb E_t\pi_{t+1},
+\end{equation}
+
+or
+
+\begin{equation}
+\boxed{
+c_t
+=
+\mathbb E_tc_{t+1}
+-
+\frac{1}{\sigma}
+\left(
+i_t-\mathbb E_t\pi_{t+1}
+\right).
+}
+\label{eq:euler_final}
+\end{equation}
+
+This is equation 1 in Dynare.
+
+Its economic content is the intertemporal substitution mechanism. Define the
+expected ex-ante real-rate deviation as
+
+\begin{equation}
+r_t^{e}
+\equiv
+i_t-\mathbb E_t\pi_{t+1}.
+\end{equation}
+
+Then
+
+\[
+r_t^e\downarrow
+\quad\Longrightarrow\quad
+c_t-\mathbb E_tc_{t+1}\uparrow.
+\]
+
+Thus, if expected inflation rises more than the nominal interest rate, current
+consumption becomes relatively attractive. This is the model-consistent
+demand-side mechanism behind expenditure being brought forward during rising
+inflation.
+
+\subsubsection{Money first-order condition}
+
+Differentiating the Lagrangian with respect to \(M_t\) gives
+
+\begin{equation}
+\frac{U_{m,t}}{P_t}
+-
+\Lambda_t
++
+\beta\mathbb E_t\Lambda_{t+1}
+=
+0.
+\end{equation}
+
+Using the bond FOC,
+
+\[
+\beta\mathbb E_t\Lambda_{t+1}
+=
+Q_t^d\Lambda_t,
+\]
+
+and equation \eqref{eq:lambda},
+
+\begin{equation}
+\frac{U_{m,t}}{U_{C,t}}
+=
+1-Q_t^d
+=
+\frac{i_t^{\mathrm{lev}}}{1+i_t^{\mathrm{lev}}}.
+\label{eq:money_foc_exact}
+\end{equation}
+
+For the separable MIU utility in equation \eqref{eq:utility_level},
+
+\begin{equation}
+\zeta_m
+\left(\frac{M_t}{P_t}\right)^{-\nu}
+C_t^\sigma
+=
+\frac{i_t^{\mathrm{lev}}}{1+i_t^{\mathrm{lev}}}.
+\label{eq:miu_exact}
+\end{equation}
+
+The exact MIU specification therefore predicts:
+
+\[
+C_t\uparrow
+\Rightarrow
+\text{money demand rises},
+\]
+
+and
+
+\[
+i_t^{\mathrm{lev}}\uparrow
+\Rightarrow
+\text{money demand falls}.
+\]
+
+\paragraph{Why the Dynare equation is semi-structural.}
+
+A literal log-linearization of equation \eqref{eq:miu_exact} would impose
+cross-equation restrictions tying the money-demand coefficients to
+\(\sigma\), \(\nu\), and the steady-state nominal rate. The running model does
+not impose those restrictions. Instead it retains the sign and economic
+structure implied by MIU while allowing the two elasticities to be estimated
+or calibrated independently:
+
+\begin{equation}
+\boxed{
+m_t
+=
+\eta_{mc}c_t
+-
+\eta_{mi}i_t.
+}
+\label{eq:money_final}
+\end{equation}
+
+This is equation 4 in Dynare. The coefficients satisfy
+
+\[
+\eta_{mc}>0,
+\qquad
+\eta_{mi}>0.
+\]
+
+This deliberate semi-structural implementation is useful because the Brazilian
+money-demand response during high inflation is empirically important and need
+not be forced to obey a restrictive preference calibration.
+
+%===============================================================================
+\subsection{CES Consumption Allocation}
+\label{app:ces}
+%===============================================================================
+
+\subsubsection{Consumption aggregator}
+
+Aggregate consumption is a CES composite:
+
+\begin{equation}
+C_t
+=
+\left[
+(1-\alpha)^{1/\eta}
+C_{H,t}^{\frac{\eta-1}{\eta}}
++
+\alpha^{1/\eta}
+C_{F,t}^{\frac{\eta-1}{\eta}}
+\right]^{\frac{\eta}{\eta-1}}.
+\label{eq:ces_level}
+\end{equation}
+
+Here \(\alpha\in(0,1)\) governs openness and \(\eta>0\) is the elasticity of
+substitution between domestic and foreign goods.
+
+\subsubsection{Expenditure-minimization problem}
+
+For a given \(C_t\), the household chooses \(C_{H,t}\) and \(C_{F,t}\) to
+minimize
+
+\begin{equation}
+P_{H,t}C_{H,t}+P_{F,t}C_{F,t}
+\end{equation}
+
+subject to equation \eqref{eq:ces_level}. Let \(\Xi_t\) denote the multiplier
+on the CES constraint. The first-order conditions imply
+
+\begin{equation}
+\frac{C_{H,t}}{C_{F,t}}
+=
+\frac{1-\alpha}{\alpha}
+\left(
+\frac{P_{H,t}}{P_{F,t}}
+\right)^{-\eta}.
+\end{equation}
+
+Solving the expenditure-minimization problem yields the demand functions
+
+\begin{equation}
+C_{H,t}
+=
+(1-\alpha)
+\left(
+\frac{P_{H,t}}{P_t}
+\right)^{-\eta}
+C_t,
+\label{eq:ch_level}
+\end{equation}
+
+and
+
+\begin{equation}
+C_{F,t}
+=
+\alpha
+\left(
+\frac{P_{F,t}}{P_t}
+\right)^{-\eta}
+C_t.
+\label{eq:cf_level}
+\end{equation}
+
+The exact CPI dual to the aggregator is
+
+\begin{equation}
+P_t
+=
+\left[
+(1-\alpha)P_{H,t}^{1-\eta}
++
+\alpha P_{F,t}^{1-\eta}
+\right]^{\frac{1}{1-\eta}}.
+\label{eq:cpi_level}
+\end{equation}
+
+%===============================================================================
+\subsection{Terms of Trade and CPI Inflation}
+\label{app:tot}
+%===============================================================================
+
+Define the terms of trade used in the model as
+
+\begin{equation}
+S_t
+\equiv
+\frac{P_{F,t}}{P_{H,t}},
+\qquad
+s_t\equiv\log S_t.
+\label{eq:s_definition}
+\end{equation}
+
+With this convention,
+
+\[
+s_t\uparrow
+\]
+
+means that imported goods become more expensive relative to Brazilian goods.
+
+A first-order approximation of the CPI around the symmetric relative-price
+steady state gives
+
+\begin{equation}
+p_t
+=
+(1-\alpha)p_{H,t}
++
+\alpha p_{F,t}.
+\end{equation}
+
+Since
+
+\[
+s_t=p_{F,t}-p_{H,t},
+\]
+
+we obtain
+
+\begin{equation}
+p_t-p_{H,t}
+=
+\alpha s_t,
+\label{eq:p_pH}
+\end{equation}
+
+and
+
+\begin{equation}
+p_{F,t}-p_t
+=
+(1-\alpha)s_t.
+\label{eq:pF_p}
+\end{equation}
+
+Substituting these relations into the log-linearized demand equations gives
+
+\begin{equation}
+\boxed{
+c_{H,t}
+=
+c_t+\eta\alpha s_t,
+}
+\label{eq:ch_final}
+\end{equation}
+
+and
+
+\begin{equation}
+\boxed{
+c_{F,t}
+=
+c_t-\eta(1-\alpha)s_t.
+}
+\label{eq:cf_final}
+\end{equation}
+
+These are equations 2 and 3 in Dynare.
+
+\subsubsection{Law of one price}
+
+Imported final goods satisfy
+
+\begin{equation}
+P_{F,t}
+=
+\mathcal E_tP_{F,t}^{*},
+\label{eq:lop}
+\end{equation}
+
+where \(\mathcal E_t\) is units of domestic currency per unit of foreign
+currency. Therefore
+
+\begin{equation}
+s_t
+=
+e_t+p_{F,t}^{*}-p_{H,t}.
+\end{equation}
+
+Taking first differences,
+
+\begin{equation}
+\boxed{
+s_t-s_{t-1}
+=
+e_t-e_{t-1}
++
+\pi_{F,t}^{*}
+-
+\pi_{H,t}.
+}
+\label{eq:tot_final}
+\end{equation}
+
+This is equation 9 in Dynare.
+
+\subsubsection{CPI inflation identity}
+
+Taking first differences of equation \eqref{eq:p_pH},
+
+\begin{equation}
+\boxed{
+\pi_t
+=
+\pi_{H,t}
++
+\alpha(s_t-s_{t-1}).
+}
+\label{eq:cpi_final}
+\end{equation}
+
+This is equation 8 in Dynare.
+
+It is an \emph{identity}, not a Phillips curve. It says that CPI inflation can
+rise immediately when imported goods become more expensive, even if
+domestic-goods inflation has not yet fully adjusted.
+
+%===============================================================================
+\subsection{The Generic Foreign-Price Shock}
+\label{app:foreign_price}
+%===============================================================================
+
+Foreign imported-goods inflation follows
+
+\begin{equation}
+\boxed{
+\pi_{F,t}^{*}
+=
+\rho_F\pi_{F,t-1}^{*}
++
+\varepsilon_{F,t}.
+}
+\label{eq:pif_final}
+\end{equation}
+
+This is equation 10 in Dynare.
+
+The model contains no oil quantity, oil production technology, or oil-specific
+utility term. The historical oil shocks are interpreted as unusually large
+positive realizations of \(\varepsilon_{F,t}\). The advantage is modularity:
+the same structural model can later be subjected to other external-price
+disturbances without rebuilding the production and household blocks.
+
+%===============================================================================
+\subsection{Firms and Imported Intermediate Inputs}
+\label{app:firms}
+%===============================================================================
+
+\subsubsection{Production technology}
+
+A domestic differentiated producer \(j\) uses labor and imported intermediate
+inputs:
+
+\begin{equation}
+Y_t(j)
+=
+A_tN_t(j)^{1-\mu}Z_t(j)^\mu,
+\qquad
+0<\mu<1.
+\label{eq:production_level}
+\end{equation}
+
+Aggregating and log-linearizing gives
+
+\begin{equation}
+\boxed{
+y_t
+=
+a_t+(1-\mu)n_t+\mu z_t.
+}
+\label{eq:production_final}
+\end{equation}
+
+This is equation 5 in Dynare.
+
+\subsubsection{Conditional cost minimization}
+
+For a required output \(Y_t(j)\), the firm minimizes
+
+\begin{equation}
+W_tN_t(j)+P_{Z,t}Z_t(j)
+\end{equation}
+
+subject to equation \eqref{eq:production_level}. Let \(\Lambda_t^{MC}\) be the
+multiplier on the production constraint:
+
+\begin{align}
+\mathcal L_t^F
+=&
+W_tN_t(j)+P_{Z,t}Z_t(j)
+\nonumber\\
+&+
+\Lambda_t^{MC}
+\left[
+Y_t(j)-A_tN_t(j)^{1-\mu}Z_t(j)^\mu
+\right].
+\end{align}
+
+The first-order conditions are
+
+\begin{equation}
+W_t
+=
+\Lambda_t^{MC}
+(1-\mu)
+\frac{Y_t(j)}{N_t(j)},
+\label{eq:foc_N_firm}
+\end{equation}
+
+and
+
+\begin{equation}
+P_{Z,t}
+=
+\Lambda_t^{MC}
+\mu
+\frac{Y_t(j)}{Z_t(j)}.
+\label{eq:foc_Z_firm}
+\end{equation}
+
+The multiplier \(\Lambda_t^{MC}\) is nominal marginal cost. Solving for the unit
+cost gives, up to a constant,
+
+\begin{equation}
+MC_t
+\propto
+\frac{
+W_t^{1-\mu}P_{Z,t}^{\mu}
+}{A_t}.
+\label{eq:unitcost}
+\end{equation}
+
+\subsubsection{Imported-input demand}
+
+Equation \eqref{eq:foc_Z_firm} implies
+
+\begin{equation}
+P_{Z,t}Z_t
+=
+\mu MC_tY_t.
+\label{eq:input_share}
+\end{equation}
+
+Define real marginal cost relative to the domestic output price:
+
+\[
+mc_t
+\equiv
+\log\left(\frac{MC_t}{P_{H,t}}\right)
+-
+\log\left(\frac{\overline{MC}}{\overline{P_H}}\right).
+\]
+
+Assume the foreign price of the imported intermediate moves with the generic
+foreign imported-goods price:
+
+\begin{equation}
+P_{Z,t}
+=
+\mathcal E_tP_{Z,t}^{*},
+\qquad
+P_{Z,t}^{*}=P_{F,t}^{*}
+\quad\text{in the baseline}.
+\label{eq:pz}
+\end{equation}
+
+Hence, to first order,
+
+\begin{equation}
+p_{Z,t}-p_{H,t}=s_t.
+\end{equation}
+
+Taking logs of equation \eqref{eq:input_share} and removing constants,
+
+\begin{equation}
+\boxed{
+z_t
+=
+y_t+mc_t-s_t.
+}
+\label{eq:z_final}
+\end{equation}
+
+This is equation 6 in Dynare.
+
+\subsubsection{Real marginal cost}
+
+Taking logs of equation \eqref{eq:unitcost} relative to \(P_{H,t}\),
+
+\begin{equation}
+mc_t
+=
+(1-\mu)(w_t-p_{H,t})
++
+\mu(p_{Z,t}-p_{H,t})
+-a_t.
+\label{eq:mc_step1}
+\end{equation}
+
+Use
+
+\[
+w_t-p_{H,t}
+=
+(w_t-p_t)+(p_t-p_{H,t}),
+\]
+
+together with equations \eqref{eq:labor_supply_linear} and \eqref{eq:p_pH}:
+
+\begin{equation}
+w_t-p_{H,t}
+=
+\sigma c_t+\varphi n_t+\alpha s_t.
+\end{equation}
+
+Substituting into equation \eqref{eq:mc_step1},
+
+\begin{align}
+mc_t
+&=
+(1-\mu)
+\left(
+\sigma c_t+\varphi n_t+\alpha s_t
+\right)
++
+\mu s_t-a_t
+\\
+&=
+(1-\mu)
+\left(
+\sigma c_t+\varphi n_t
+\right)
+-a_t
++
+\left[
+\mu+(1-\mu)\alpha
+\right]s_t.
+\end{align}
+
+Define
+
+\begin{equation}
+\boxed{
+\lambda_s
+\equiv
+\mu+(1-\mu)\alpha.
+}
+\label{eq:lambda_s}
+\end{equation}
+
+Then
+
+\begin{equation}
+\boxed{
+mc_t
+=
+(1-\mu)
+\left(
+\sigma c_t+\varphi n_t
+\right)
+-a_t
++
+\lambda_ss_t.
+}
+\label{eq:mc_final}
+\end{equation}
+
+This is equation 7 in Dynare.
+
+The coefficient \(\lambda_s\) has two components:
+
+\[
+\underbrace{\mu}_{\text{direct imported-input cost}}
++
+\underbrace{(1-\mu)\alpha}_{\text{CPI--domestic-price wage wedge}}.
+\]
+
+Thus the imported-price shock reaches domestic firms without putting the shock
+directly into the Phillips curve.
+
+%===============================================================================
+\subsection{Calvo Pricing with Backward Indexation}
+\label{app:calvo}
+%===============================================================================
+
+\subsubsection{Demand for an individual differentiated good}
+
+A standard CES aggregator over domestic differentiated goods implies demand
+
+\begin{equation}
+Y_t(j)
+=
+\left(
+\frac{P_{H,t}(j)}{P_{H,t}}
+\right)^{-\epsilon}
+Y_t,
+\qquad
+\epsilon>1.
+\label{eq:firm_demand}
+\end{equation}
+
+A fraction \(1-\theta\) of firms can reoptimize at date \(t\). The remaining
+fraction \(\theta\) cannot choose a new price.
+
+\subsubsection{Indexation of non-reset prices}
+
+A firm that cannot reoptimize updates its previous price using past domestic
+inflation:
+
+\begin{equation}
+P_{H,t}(j)
+=
+P_{H,t-1}(j)
+\Pi_{H,t-1}^{\gamma_I}
+\bar\Pi_H^{1-\gamma_I}.
+\label{eq:indexation_rule}
+\end{equation}
+
+The parameter \(\gamma_I\in[0,1]\) measures backward indexation.
+
+\subsubsection{Reset-price problem}
+
+A firm resetting at date \(t\) chooses \(P_{H,t}^{\#}\) to maximize the expected
+discounted stream of profits while its price may remain non-optimized:
+
+\begin{align}
+\max_{P_{H,t}^{\#}}
+\mathbb E_t
+\sum_{k=0}^{\infty}
+(\beta\theta)^k
+\mathcal Q_{t,t+k}
+\Big[
+P_{H,t}^{\#}\mathcal I_{t,t+k}
+-
+MC_{t+k}
+\Big]
+Y_{t+k|t},
+\label{eq:reset_problem}
+\end{align}
+
+where \(\mathcal I_{t,t+k}\) cumulates the indexation rule from \(t\) to
+\(t+k\), \(\mathcal Q_{t,t+k}\) is the relevant stochastic discounting term,
+and \(Y_{t+k|t}\) is demand for the firm's good conditional on its reset price.
+
+The full nonlinear first-order condition equates the reset price to a markup
+over a discounted sequence of expected marginal costs. Around the normalized
+steady state, the first-order representation can be written in terms of the
+``inflation gap''
+
+\begin{equation}
+\widetilde\pi_{H,t}
+\equiv
+\pi_{H,t}-\gamma_I\pi_{H,t-1}.
+\end{equation}
+
+The hybrid Phillips curve is
+
+\begin{equation}
+\widetilde\pi_{H,t}
+=
+\beta\mathbb E_t\widetilde\pi_{H,t+1}
++
+\kappa mc_t.
+\label{eq:nkpc_gap}
+\end{equation}
+
+Expanding this equation,
+
+\begin{equation}
+\pi_{H,t}-\gamma_I\pi_{H,t-1}
+=
+\beta\mathbb E_t
+\left(
+\pi_{H,t+1}-\gamma_I\pi_{H,t}
+\right)
++\kappa mc_t.
+\end{equation}
+
+Collecting current inflation terms,
+
+\begin{equation}
+\boxed{
+(1+\beta\gamma_I)\pi_{H,t}
+=
+\gamma_I\pi_{H,t-1}
++
+\beta\mathbb E_t\pi_{H,t+1}
++
+\kappa mc_t.
+}
+\label{eq:nkpc_final}
+\end{equation}
+
+This is equation 11 in Dynare.
+
+The implemented slope is
+
+\begin{equation}
+\boxed{
+\kappa
+=
+\frac{(1-\theta)(1-\beta\theta)}{\theta}.
+}
+\label{eq:kappa_final}
+\end{equation}
+
+\paragraph{Important implementation note on trend inflation.}
+
+The running model uses a positive steady-state CPI inflation benchmark for the
+seigniorage calculation, but the Phillips-curve slope in
+equation \eqref{eq:kappa_final} is the standard first-order Calvo coefficient.
+A full positive-trend-inflation Calvo derivation would modify the reset-price
+recursions and generally change the reduced-form coefficients. That extension
+is \emph{not} part of the successfully running baseline. The present appendix
+therefore documents the implemented model rather than silently replacing it
+with a different positive-trend-inflation pricing block.
+
+%===============================================================================
+\subsection{Exports and Foreign Demand}
+\label{app:exports}
+%===============================================================================
+
+A foreign CES demand system would imply that demand for Brazilian output rises
+when Brazilian goods become cheaper relative to foreign goods and when foreign
+activity increases. The implemented first-order export equation is the
+parsimonious reduced form
+
+\begin{equation}
+\boxed{
+x_t
+=
+y_t^{*}+\eta_xs_t.
+}
+\label{eq:exports_final}
+\end{equation}
+
+This is equation 12 in Dynare.
+
+Because \(s_t=P_{F,t}/P_{H,t}\) in logs, \(s_t\uparrow\) means foreign goods are
+more expensive relative to Brazilian goods. Hence the sign \(+\eta_xs_t\) is
+consistent with an improvement in Brazilian price competitiveness.
+
+%===============================================================================
+\subsection{Goods-Market Clearing}
+\label{app:goodsmarket}
+%===============================================================================
+
+Domestic output is absorbed by household demand for domestic goods, exports,
+ordinary government consumption, and public/SOE investment:
+
+\begin{equation}
+Y_t
+=
+C_{H,t}
++
+X_t
++
+G_t
++
+I_t^G.
+\label{eq:goods_level}
+\end{equation}
+
+Define steady-state shares
+
+\begin{equation}
+\omega_{CH}
+=
+\frac{\overline{C_H}}{\bar Y},
+\qquad
+\omega_X
+=
+\frac{\bar X}{\bar Y},
+\qquad
+\omega_G
+=
+\frac{\bar G}{\bar Y},
+\qquad
+\omega_{IG}
+=
+\frac{\overline{I^G}}{\bar Y}.
+\end{equation}
+
+Using the weighted-sum rule in equation \eqref{eq:sharelinearization},
+
+\begin{equation}
+\boxed{
+y_t
+=
+\omega_{CH}c_{H,t}
++
+\omega_Xx_t
++
+\omega_Gg_t
++
+\omega_{IG}ig_t.
+}
+\label{eq:goods_final}
+\end{equation}
+
+This is equation 13 in Dynare.
+
+The shares satisfy
+
+\begin{equation}
+\boxed{
+\omega_{CH}+\omega_X+\omega_G+\omega_{IG}=1.
+}
+\label{eq:domestic_share_identity}
+\end{equation}
+
+Imported consumption and imported intermediate inputs do not appear as uses of
+\emph{domestic} output. They enter the external resource balance instead.
+
+%===============================================================================
+\subsection{Trade Balance}
+\label{app:tradebalance}
+%===============================================================================
+
+Measure the trade balance in domestic-good units as
+
+\begin{equation}
+TB_t
+=
+X_t
+-
+S_tC_{F,t}
+-
+S_tZ_t.
+\label{eq:tb_level}
+\end{equation}
+
+Let
+
+\begin{equation}
+\omega_{CF}
+=
+\frac{\overline{C_F}}{\bar Y},
+\qquad
+\omega_Z
+=
+\frac{\bar Z}{\bar Y}.
+\end{equation}
+
+The baseline normalization imposes
+
+\begin{equation}
+\omega_X=\omega_{CF}+\omega_Z,
+\label{eq:balanced_trade_normalization}
+\end{equation}
+
+so the steady-state goods trade balance is zero.
+
+Because the steady-state trade balance is zero, one must not take its logarithm.
+Instead define
+
+\begin{equation}
+tb_t
+\equiv
+\frac{TB_t-\overline{TB}}{\bar Y}.
+\end{equation}
+
+First-order approximation of equation \eqref{eq:tb_level} gives
+
+\begin{align}
+tb_t
+&=
+\omega_Xx_t
+-
+\omega_{CF}(c_{F,t}+s_t)
+-
+\omega_Z(z_t+s_t).
+\end{align}
+
+Thus,
+
+\begin{equation}
+\boxed{
+tb_t
+=
+\omega_Xx_t
+-
+\omega_{CF}(c_{F,t}+s_t)
+-
+\omega_Z(z_t+s_t).
+}
+\label{eq:tb_final}
+\end{equation}
+
+This is equation 14 in Dynare.
+
+The terms \(c_{F,t}+s_t\) and \(z_t+s_t\) are import \emph{value} deviations:
+changes in import expenditure reflect both quantities and relative prices.
+
+%===============================================================================
+\subsection{Consolidated Public External Debt}
+\label{app:externaldebt}
+%===============================================================================
+
+\subsubsection{Economic interpretation}
+
+The model deliberately does not use a household foreign bond. External debt is
+instead interpreted as consolidated public-sector foreign indebtedness,
+including foreign liabilities associated with the government and relevant
+public/SOE channels.
+
+Let the benchmark external-debt-to-output ratio be \(\bar d\). The Dynare
+variable \(d_t\) is the deviation of that ratio from its benchmark.
+
+\subsubsection{Motivating debt law}
+
+A simple external debt accumulation relation is
+
+\begin{equation}
+D_t^{*}
+=
+\left(
+1+r_{t-1}^{*}+RP_{t-1}
+\right)
+D_{t-1}^{*}
+-
+TB_t
++
+\text{steady-state normalization terms}.
+\label{eq:external_debt_nonlinear_motivation}
+\end{equation}
+
+The omitted constant normalization absorbs the steady rollover/resource-transfer
+component required to support the chosen positive benchmark \(\bar d\).
+Because the model is written entirely in deviations, that constant disappears
+from the linear system.
+
+Linearizing the debt ratio around \(\bar d\), and writing the steady world
+servicing component as \(\bar r^{*}\), gives the implemented law
+
+\begin{equation}
+\boxed{
+d_t
+=
+(1+\bar r^{*})d_{t-1}
+-
+tb_t
++
+\bar d
+\left(
+i_{t-1}^{*}+rp_{t-1}
+\right).
+}
+\label{eq:d_final}
+\end{equation}
+
+This is equation 15 in Dynare.
+
+The signs are central:
+
+\[
+tb_t<0
+\quad\Rightarrow\quad
+d_t\uparrow,
+\]
+
+and
+
+\[
+i_{t-1}^{*}+rp_{t-1}\uparrow
+\quad\Rightarrow\quad
+d_t\uparrow.
+\]
+
+Thus a trade deficit and higher inherited borrowing costs both increase public
+external indebtedness.
+
+\paragraph{Accounting caution.}
+
+Equation \eqref{eq:d_final} is a local debt-ratio law, not a complete
+international balance-of-payments system with private capital flows, reserve
+accumulation, valuation effects, and GDP-growth denominator effects. Those
+objects are intentionally outside the baseline. This is the precise sense in
+which the external block is parsimonious.
+
+%===============================================================================
+\subsection{Country-Risk Premium}
+\label{app:riskpremium}
+%===============================================================================
+
+The risk premium is not an optimizing household condition. It is a pricing
+wedge imposed on Brazilian external borrowing.
+
+A nonlinear motivation is
+
+\begin{equation}
+1+RP_t
+=
+\exp
+\left\{
+\phi_D(D_t-\bar D)
++
+\phi_{\Delta D}(D_t-D_{t-1})
++
+\varepsilon_{rp,t}
+\right\}.
+\end{equation}
+
+A first-order approximation around zero risk-premium deviation gives
+
+\begin{equation}
+\boxed{
+rp_t
+=
+\phi_Dd_t
++
+\phi_{\Delta D}(d_t-d_{t-1})
++
+\varepsilon_{rp,t}.
+}
+\label{eq:rp_final}
+\end{equation}
+
+This is equation 16 in Dynare.
+
+The first term makes financing conditions sensitive to the level of external
+debt. The second is an accelerator: a rapid increase in debt can worsen
+financing conditions even for a given debt level.
+
+The model does not assume that this accelerator is mechanically enormous. Its
+size is an empirical question.
+
+%===============================================================================
+\subsection{World Interest Rate}
+\label{app:worldrate}
+%===============================================================================
+
+The world nominal interest-rate deviation follows
+
+\begin{equation}
+\boxed{
+i_t^{*}
+=
+\rho_{i^{*}}i_{t-1}^{*}
++
+\varepsilon_{i^{*},t}.
+}
+\label{eq:istar_final}
+\end{equation}
+
+This is equation 17 in Dynare.
+
+Separating \(i_t^{*}\) from \(rp_t\) is historically important. A deterioration
+in Brazil-specific risk and a tightening of global financial conditions are
+distinct shocks.
+
+%===============================================================================
+\subsection{Sovereign Uncovered Interest Parity}
+\label{app:uip}
+%===============================================================================
+
+Because households do not trade a foreign bond, UIP is interpreted as an
+international-arbitrage condition for Brazilian sovereign/public liabilities.
+
+A foreign investor comparing a one-period domestic-currency Brazilian asset
+with a foreign-currency return requires, abstracting from higher-order risk
+terms,
+
+\begin{equation}
+1+i_t^{\mathrm{lev}}
+\simeq
+(1+i_t^{*,\mathrm{lev}})
+(1+RP_t)
+\mathbb E_t
+\left(
+\frac{\mathcal E_{t+1}}{\mathcal E_t}
+\right).
+\label{eq:uip_gross}
+\end{equation}
+
+Taking logs and linearizing,
+
+\begin{equation}
+\boxed{
+i_t
+=
+i_t^{*}
++
+rp_t
++
+\mathbb E_te_{t+1}
+-
+e_t.
+}
+\label{eq:uip_final}
+\end{equation}
+
+This is equation 18 in Dynare.
+
+A higher domestic interest rate can therefore reflect:
+
+\begin{enumerate}
+    \item higher world rates;
+    \item higher Brazilian country risk; or
+    \item expected depreciation of the domestic currency.
+\end{enumerate}
+
+The equation is called ``sovereign UIP'' in this model precisely to avoid the
+incorrect statement that it comes from household portfolio optimization.
+
+%===============================================================================
+\subsection{Monetary Policy}
+\label{app:monetarypolicy}
+%===============================================================================
+
+Monetary policy is specified directly rather than derived from optimization.
+The rule is
+
+\begin{equation}
+\boxed{
+i_t
+=
+\rho_i i_{t-1}
++
+(1-\rho_i)
+\left[
+\phi_{\pi}\pi_t
++
+\phi_E(i_t^{*}+rp_t)
+\right]
++
+\varepsilon_{i,t}.
+}
+\label{eq:policy_final}
+\end{equation}
+
+This is equation 19 in Dynare.
+
+The final baseline imposes
+
+\begin{equation}
+0<\phi_{\pi}<1,
+\qquad
+\phi_y=0,
+\qquad
+\phi_E>0.
+\end{equation}
+
+Therefore:
+
+\begin{itemize}
+    \item the central bank responds only weakly to inflation;
+    \item there is no direct output-gap reaction;
+    \item external financing conditions matter for the domestic rate.
+\end{itemize}
+
+The coefficient \(\phi_{\pi}<1\) is not merely a numerical trick. It is the
+model's explicit representation of weak anti-inflation monetary stabilization
+during the historical period. Whether the full equilibrium is determinate is
+nevertheless a property of the \emph{whole model}, not of \(\phi_\pi\) alone.
+
+%===============================================================================
+\subsection{Seigniorage}
+\label{app:seigniorage}
+%===============================================================================
+
+Nominal money creation is
+
+\[
+M_t-M_{t-1}.
+\]
+
+Real seigniorage is
+
+\begin{equation}
+SG_t
+=
+\frac{M_t-M_{t-1}}{P_t}.
+\label{eq:sg_level_1}
+\end{equation}
+
+Define real balances
+
+\[
+\mathcal M_t\equiv\frac{M_t}{P_t}
+\]
+
+and gross inflation
+
+\[
+\Pi_t\equiv\frac{P_t}{P_{t-1}}.
+\]
+
+Then
+
+\begin{align}
+SG_t
+&=
+\frac{M_t}{P_t}
+-
+\frac{M_{t-1}}{P_t}
+\\
+&=
+\mathcal M_t
+-
+\frac{\mathcal M_{t-1}}{\Pi_t}.
+\label{eq:sg_exact}
+\end{align}
+
+Let
+
+\[
+\omega_M
+\equiv
+\frac{\overline{\mathcal M}}{\bar Y},
+\qquad
+\bar\Pi>1.
+\]
+
+Write
+
+\[
+\mathcal M_t=\overline{\mathcal M}e^{m_t},
+\qquad
+\Pi_t=\bar\Pi e^{\pi_t}.
+\]
+
+Using
+
+\[
+e^{m_t}\simeq1+m_t
+\]
+
+and
+
+\[
+\frac{e^{m_{t-1}}}{\bar\Pi e^{\pi_t}}
+\simeq
+\frac{1}{\bar\Pi}
+\left(
+1+m_{t-1}-\pi_t
+\right),
+\]
+
+subtract the steady-state value and divide by \(\bar Y\). The result is
+
+\begin{equation}
+\boxed{
+sg_t
+=
+\omega_M
+\left[
+m_t
+-
+\bar\Pi^{-1}m_{t-1}
++
+\bar\Pi^{-1}\pi_t
+\right].
+}
+\label{eq:sg_final}
+\end{equation}
+
+This is equation 20 in Dynare.
+
+Define
+
+\[
+\iota_\Pi\equiv\bar\Pi^{-1}.
+\]
+
+Then the exact Dynare implementation is
+
+\[
+sg_t
+=
+\texttt{money\_y}
+\left[
+m_t
+-
+\texttt{invPi}\,m_{t-1}
++
+\texttt{invPi}\,\pi_t
+\right].
+\]
+
+Seigniorage is therefore endogenous. It responds to both real money balances
+and inflation. The model does not impose an equation such as
+\(SG_t=\omega\,Def_t\).
+
+%===============================================================================
+\subsection{Taxes, Government Consumption, and Public Investment}
+\label{app:fiscal_processes}
+%===============================================================================
+
+\subsubsection{Taxes}
+
+Tax revenue as a share of output follows
+
+\begin{equation}
+\boxed{
+\tau_t
+=
+\rho_\tau\tau_{t-1}
++
+\varepsilon_{\tau,t}.
+}
+\label{eq:tau_final}
+\end{equation}
+
+This is equation 21 in Dynare.
+
+There is no term of the form
+
+\[
+\phi_{\tau b}b_{t-1}.
+\]
+
+Thus, in the post-1973 baseline,
+
+\begin{equation}
+\boxed{
+\phi_{\tau b}=0.
+}
+\end{equation}
+
+Taxes are a persistent revenue source, but debt does not automatically trigger
+a stabilizing tax increase.
+
+\subsubsection{Ordinary government consumption}
+
+\begin{equation}
+\boxed{
+g_t
+=
+\rho_Gg_{t-1}
++
+\varepsilon_{G,t}.
+}
+\label{eq:g_final}
+\end{equation}
+
+This is equation 22 in Dynare.
+
+\subsubsection{Public/SOE investment}
+
+\begin{equation}
+\boxed{
+ig_t
+=
+\rho_{IG}ig_{t-1}
++
+\varepsilon_{IG,t}.
+}
+\label{eq:ig_final}
+\end{equation}
+
+This is equation 23 in Dynare.
+
+The shock \(\varepsilon_{IG,t}\) is a development-policy shock. It is
+deliberately distinct from \(\varepsilon_{F,t}\). The model can therefore ask
+what would have happened if Brazil had faced the same foreign-price shock
+without the same public-investment response.
+
+%===============================================================================
+\subsection{Domestic Public Debt and the Consolidated Financing Identity}
+\label{app:domesticdebt}
+%===============================================================================
+
+\subsubsection{Economic financing logic}
+
+Domestic debt is the residual financing instrument after accounting for taxes,
+seigniorage, and net new external financing.
+
+A useful real-ratio representation is
+
+\begin{equation}
+B_t^R
+=
+(1+r_{d,t-1}^R)B_{t-1}^R
++
+G_t
++
+I_t^G
+-
+T_t
+-
+SG_t
+-
+NF_t^{*},
+\label{eq:domestic_debt_motivation}
+\end{equation}
+
+where \(NF_t^{*}\) denotes \emph{net new external financing available for
+current fiscal uses}. It is not the same thing as the total increase in
+external debt because part of the increase merely capitalizes external
+interest.
+
+Write external interest service approximately as
+
+\begin{equation}
+INT_t^{*}
+\simeq
+\bar r^{*}D_{t-1}
++
+\bar d
+\left(
+i_{t-1}^{*}+rp_{t-1}
+\right).
+\label{eq:external_interest_linear}
+\end{equation}
+
+Then net new external financing is
+
+\begin{equation}
+NF_t^{*}
+=
+(D_t-D_{t-1})-INT_t^{*}.
+\label{eq:net_external_financing}
+\end{equation}
+
+Substituting equation \eqref{eq:net_external_financing} into
+\eqref{eq:domestic_debt_motivation} explains why the domestic financing law
+contains both
+
+\[
+-(d_t-d_{t-1})
+\]
+
+and positive external-interest-service terms.
+
+\subsubsection{Real burden of inherited domestic nominal debt}
+
+The real servicing cost of domestic nominal liabilities varies with the
+nominal rate and inflation. To first order,
+
+\begin{equation}
+r_{d,t-1}^R
+\simeq
+\bar r_d
++
+i_{t-1}
+-
+\pi_t.
+\end{equation}
+
+When this time-varying real rate multiplies the benchmark debt ratio \(\bar b\),
+its first-order contribution is
+
+\begin{equation}
+\bar b(i_{t-1}-\pi_t).
+\end{equation}
+
+Thus current inflation erodes the real value of inherited domestic nominal
+liabilities.
+
+\subsubsection{Final domestic-debt equation}
+
+Combining the preceding components and using the steady-state expenditure
+shares gives
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+b_t
+={}&
+(1+\bar r_d)b_{t-1}
++
+\omega_Gg_t
++
+\omega_{IG}ig_t
+-
+\tau_t
+-
+sg_t
+\\
+&-
+(d_t-d_{t-1})
++
+\bar r^{*}d_{t-1}
++
+\bar d
+\left(
+i_{t-1}^{*}+rp_{t-1}
+\right)
++
+\bar b
+\left(
+i_{t-1}-\pi_t
+\right).
+\end{aligned}
+}
+\label{eq:b_final}
+\end{equation}
+
+This is equation 24 in Dynare.
+
+The equation can be read term by term:
+
+\begin{align*}
+(1+\bar r_d)b_{t-1}
+&:
+\text{ inherited domestic debt and benchmark servicing},\\
++\omega_Gg_t
+&:
+\text{ ordinary spending pressure},\\
++\omega_{IG}ig_t
+&:
+\text{ public-investment pressure},\\
+-\tau_t
+&:
+\text{ tax financing},\\
+-sg_t
+&:
+\text{ monetary financing},\\
+-(d_t-d_{t-1})
+&:
+\text{ gross increase in external financing reduces domestic need},\\
++\bar r^*d_{t-1}
+&:
+\text{ benchmark external interest is not fresh financing},\\
++\bar d(i_{t-1}^*+rp_{t-1})
+&:
+\text{ deviations in external borrowing costs},\\
++\bar b(i_{t-1}-\pi_t)
+&:
+\text{ deviation in the real cost of inherited domestic nominal debt}.
+\end{align*}
+
+%===============================================================================
+\subsection{Technology and Foreign Output}
+\label{app:real_shocks}
+%===============================================================================
+
+Productivity follows
+
+\begin{equation}
+\boxed{
+a_t
+=
+\rho_aa_{t-1}
++
+\varepsilon_{a,t},
+}
+\label{eq:a_final}
+\end{equation}
+
+which is equation 25 in Dynare.
+
+Foreign activity follows
+
+\begin{equation}
+\boxed{
+y_t^{*}
+=
+\rho_{y^{*}}y_{t-1}^{*}
++
+\varepsilon_{y^{*},t},
+}
+\label{eq:ystar_final}
+\end{equation}
+
+which is equation 26.
+
+%===============================================================================
+\subsection{The Exact 26-Equation Dynare System}
+\label{app:fullsystem}
+%===============================================================================
+
+For reference, the model actually solved by Dynare is the following:
+
+\begin{align}
+c_t
+&=
+\mathbb E_tc_{t+1}
+-\frac{1}{\sigma}
+\left(
+i_t-\mathbb E_t\pi_{t+1}
+\right),
+\tag{1}
+\\
+c_{H,t}
+&=
+c_t+\eta\alpha s_t,
+\tag{2}
+\\
+c_{F,t}
+&=
+c_t-\eta(1-\alpha)s_t,
+\tag{3}
+\\
+m_t
+&=
+\eta_{mc}c_t-\eta_{mi}i_t,
+\tag{4}
+\\
+y_t
+&=
+a_t+(1-\mu)n_t+\mu z_t,
+\tag{5}
+\\
+z_t
+&=
+y_t+mc_t-s_t,
+\tag{6}
+\\
+mc_t
+&=
+(1-\mu)(\sigma c_t+\varphi n_t)-a_t+\lambda_ss_t,
+\tag{7}
+\\
+\pi_t
+&=
+\pi_{H,t}+\alpha(s_t-s_{t-1}),
+\tag{8}
+\\
+s_t-s_{t-1}
+&=
+e_t-e_{t-1}+\pi_{F,t}^{*}-\pi_{H,t},
+\tag{9}
+\\
+\pi_{F,t}^{*}
+&=
+\rho_F\pi_{F,t-1}^{*}+\varepsilon_{F,t},
+\tag{10}
+\\
+(1+\beta\gamma_I)\pi_{H,t}
+&=
+\gamma_I\pi_{H,t-1}
++\beta\mathbb E_t\pi_{H,t+1}
++\kappa mc_t,
+\tag{11}
+\\
+x_t
+&=
+y_t^{*}+\eta_xs_t,
+\tag{12}
+\\
+y_t
+&=
+\omega_{CH}c_{H,t}
++\omega_Xx_t
++\omega_Gg_t
++\omega_{IG}ig_t,
+\tag{13}
+\\
+tb_t
+&=
+\omega_Xx_t
+-\omega_{CF}(c_{F,t}+s_t)
+-\omega_Z(z_t+s_t),
+\tag{14}
+\\
+d_t
+&=
+(1+\bar r^{*})d_{t-1}
+-tb_t
++\bar d(i_{t-1}^{*}+rp_{t-1}),
+\tag{15}
+\\
+rp_t
+&=
+\phi_Dd_t+\phi_{\Delta D}(d_t-d_{t-1})
++\varepsilon_{rp,t},
+\tag{16}
+\\
+i_t^{*}
+&=
+\rho_{i^{*}}i_{t-1}^{*}
++\varepsilon_{i^{*},t},
+\tag{17}
+\\
+i_t
+&=
+i_t^{*}+rp_t+\mathbb E_te_{t+1}-e_t,
+\tag{18}
+\\
+i_t
+&=
+\rho_i i_{t-1}
++
+(1-\rho_i)
+\left[
+\phi_\pi\pi_t+\phi_E(i_t^{*}+rp_t)
+\right]
++\varepsilon_{i,t},
+\tag{19}
+\\
+sg_t
+&=
+\omega_M
+\left[
+m_t-\bar\Pi^{-1}m_{t-1}
++\bar\Pi^{-1}\pi_t
+\right],
+\tag{20}
+\\
+\tau_t
+&=
+\rho_\tau\tau_{t-1}
++\varepsilon_{\tau,t},
+\tag{21}
+\\
+g_t
+&=
+\rho_Gg_{t-1}
++\varepsilon_{G,t},
+\tag{22}
+\\
+ig_t
+&=
+\rho_{IG}ig_{t-1}
++\varepsilon_{IG,t},
+\tag{23}
+\\
+b_t
+&=
+(1+\bar r_d)b_{t-1}
++\omega_Gg_t+\omega_{IG}ig_t-\tau_t-sg_t
+\nonumber\\
+&\quad
+-(d_t-d_{t-1})
++\bar r^{*}d_{t-1}
++\bar d(i_{t-1}^{*}+rp_{t-1})
++\bar b(i_{t-1}-\pi_t),
+\tag{24}
+\\
+a_t
+&=
+\rho_aa_{t-1}+\varepsilon_{a,t},
+\tag{25}
+\\
+y_t^{*}
+&=
+\rho_{y^{*}}y_{t-1}^{*}+\varepsilon_{y^{*},t}.
+\tag{26}
+\end{align}
+
+The 26 endogenous variables are
+
+\begin{equation}
+\left\{
+c,n,y,z,mc,\pi_H,\pi,s,e,i,m,c_H,c_F,x,tb,d,rp,
+i^{*},ig,g,\tau,b,sg,\pi_F^{*},a,y^{*}
+\right\}.
+\end{equation}
+
+The nine structural shocks are
+
+\begin{equation}
+\left\{
+\varepsilon_F,
+\varepsilon_{i^{*}},
+\varepsilon_{rp},
+\varepsilon_i,
+\varepsilon_{IG},
+\varepsilon_G,
+\varepsilon_\tau,
+\varepsilon_a,
+\varepsilon_{y^{*}}
+\right\}.
+\end{equation}
+
+%===============================================================================
+\subsection{Logical Status of Every Equation}
+\label{app:equation_types}
+%===============================================================================
+
+\begin{description}
+\item[Equation 1 -- Consumption Euler equation.] Optimality condition. Derived from the household choice of one-period domestic government bonds.
+\item[Equation 2 -- Domestic consumption demand.] Optimal allocation condition. Derived from CES expenditure minimization.
+\item[Equation 3 -- Imported consumption demand.] Optimal allocation condition. Derived from CES expenditure minimization.
+\item[Equation 4 -- Real money demand.] Semi-structural optimality approximation. Its signs and economic content are motivated by MIU, while its two elasticities are left free in the implemented model.
+\item[Equation 5 -- Production technology.] Technology identity. Cobb--Douglas production using labor and imported intermediate inputs.
+\item[Equation 6 -- Imported-input demand.] Firm optimality condition. Derived from conditional cost minimization.
+\item[Equation 7 -- Real marginal cost.] Derived equilibrium relation. Combines firm unit cost, household labor supply, and relative-price identities.
+\item[Equation 8 -- CPI inflation.] Identity. Follows from the CPI and terms-of-trade definitions.
+\item[Equation 9 -- Terms of trade.] Identity. Follows from the law of one price and relative-price definitions.
+\item[Equation 10 -- Foreign-price process.] Stochastic specification. AR(1) exogenous process.
+\item[Equation 11 -- Indexed NKPC.] Firm optimality and price-setting relation. Derived from Calvo reset pricing with backward indexation.
+\item[Equation 12 -- Export demand.] Semi-structural foreign-demand equation. Depends on foreign activity and relative-price competitiveness.
+\item[Equation 13 -- Goods market.] Market-clearing identity. Equates domestic output with its domestic and foreign uses.
+\item[Equation 14 -- Trade balance.] Accounting identity. Export value minus final and intermediate import values.
+\item[Equation 15 -- External public debt.] Semi-structural accounting law. Links the trade balance and inherited external financing costs to public external debt.
+\item[Equation 16 -- Country-risk premium.] Pricing wedge. Depends on the debt level, debt acceleration, and an autonomous risk shock.
+\item[Equation 17 -- World interest rate.] Stochastic specification. AR(1) exogenous process.
+\item[Equation 18 -- Sovereign UIP.] Arbitrage condition. Prices domestic and foreign-currency public liabilities.
+\item[Equation 19 -- Monetary policy.] Policy rule. Combines a passive inflation response with a response to external financing conditions.
+\item[Equation 20 -- Seigniorage.] Accounting identity. Real value of nominal money creation.
+\item[Equation 21 -- Taxes.] Fiscal process. Persistent revenue ratio with zero endogenous debt feedback.
+\item[Equation 22 -- Government consumption.] Fiscal process. Persistent ordinary government-spending process.
+\item[Equation 23 -- Public investment.] Fiscal process. Persistent public/SOE development-policy expenditure.
+\item[Equation 24 -- Domestic public debt.] Consolidated financing identity. Domestic debt is residual financing after taxes, seigniorage, and net external financing.
+\item[Equation 25 -- Technology.] Stochastic specification. AR(1) productivity process.
+\item[Equation 26 -- Foreign output.] Stochastic specification. AR(1) foreign-demand process.
+\end{description}
+
+%===============================================================================
+\subsection{Baseline Parameterization Used in the Running Model}
+\label{app:parameters}
+%===============================================================================
+
+The following table records the exact starting values in the running Dynare
+file. These are debugging/baseline values rather than claims that all parameters
+have already been historically estimated.
+
+\begin{description}
+\item[\texttt{beta} = 0.99.] Calibrated quarterly discount factor.
+\item[\texttt{sigma} = 1.50.] Calibrated CRRA coefficient / inverse intertemporal elasticity of substitution.
+\item[\texttt{varphi} = 1.00.] Calibrated inverse Frisch parameter.
+\item[\texttt{alpha} = 0.10.] Calibrated openness/import-share parameter.
+\item[\texttt{eta} = 0.80.] Calibrated elasticity between domestic and foreign consumption goods.
+\item[\texttt{mu} = 0.12.] Calibrated imported-intermediate production share.
+\item[\texttt{lambda\_s} = 0.208.] Derived as \(\mu+(1-\mu)\alpha\); it is not independently estimated.
+\item[\texttt{theta} = 0.75.] Baseline value for the Calvo non-reset probability; intended for estimation.
+\item[\texttt{gammaI} = 0.70.] Baseline backward-indexation coefficient; intended for estimation.
+\item[\texttt{kappa} = 0.0858333.] Derived as \(((1-\theta)(1-\beta\theta))/\theta\).
+\item[\texttt{eta\_x} = 0.70.] Calibrated export relative-price elasticity.
+\item[\texttt{cH\_y} = 0.68.] Calibrated domestic-household-absorption share of output.
+\item[\texttt{x\_y} = 0.12.] Calibrated export share of output.
+\item[\texttt{g\_y} = 0.14.] Calibrated ordinary-government-consumption share of output.
+\item[\texttt{ig\_y} = 0.06.] Calibrated public/SOE-investment share of output.
+\item[\texttt{cf\_y} = 0.05.] Calibrated imported-final-consumption share of output.
+\item[\texttt{z\_y} = 0.07.] Calibrated imported-intermediate-expenditure share of output.
+\item[\texttt{rhoF} = 0.75.] Baseline foreign-price persistence; intended for estimation.
+\item[\texttt{rhoiw} = 0.85.] Baseline world-interest-rate persistence; intended for estimation.
+\item[\texttt{phiD} = 0.030.] Baseline debt-level effect on the country-risk premium; intended for estimation.
+\item[\texttt{phiDD} = 0.050.] Baseline debt-acceleration effect on the country-risk premium; intended for estimation.
+\item[\texttt{dbar} = 0.25.] Calibrated benchmark external public-debt/GDP ratio.
+\item[\texttt{rstar\_ss} = 0.0125.] Calibrated quarterly world servicing benchmark.
+\item[\texttt{rhoi} = 0.75.] Baseline domestic interest-rate smoothing; intended for estimation.
+\item[\texttt{phiPi} = 0.35.] Baseline weak monetary response to inflation; intended for estimation.
+\item[\texttt{phiE} = 0.65.] Baseline monetary response to external financing conditions; intended for estimation.
+\item[\texttt{eta\_mc} = 0.75.] Baseline activity elasticity of money demand; intended for estimation.
+\item[\texttt{eta\_mi} = 4.00.] Baseline interest semi-elasticity of money demand; intended for estimation.
+\item[\texttt{money\_y} = 0.08.] Calibrated steady-state real-money-balances/output ratio.
+\item[\texttt{Pi\_ss} = \((1.20)^{1/4}\).] Calibrated gross quarterly inflation benchmark corresponding to 20 percent annual inflation.
+\item[\texttt{invPi} = \(1/\bar\Pi\).] Derived inverse gross steady-state inflation.
+\item[\texttt{rhotau} = 0.85.] Baseline persistence of the effective tax ratio; intended for estimation.
+\item[\texttt{rhoG} = 0.80.] Baseline government-consumption persistence; intended for estimation.
+\item[\texttt{rhoIG} = 0.95.] Baseline public-investment persistence; intended for estimation.
+\item[\texttt{rhoa} = 0.90.] Baseline technology persistence; intended for estimation.
+\item[\texttt{rhoystar} = 0.85.] Baseline foreign-output persistence; intended for estimation.
+\item[\texttt{rdom\_ss} = 0.010.] Calibrated quarterly domestic-debt servicing benchmark.
+\item[\texttt{bbar} = 0.20.] Calibrated benchmark domestic public-debt/GDP ratio.
+\end{description}
+
+Two accounting checks hold in the baseline:
+
+\begin{equation}
+0.68+0.12+0.14+0.06=1,
+\end{equation}
+
+and
+
+\begin{equation}
+0.05+0.07=0.12.
+\end{equation}
+
+Thus domestic-output absorption shares sum to unity and baseline import
+expenditure equals exports.
+
+%===============================================================================
+\subsection{Shock Standard Deviations in the Simulation File}
+\label{app:shock_sd}
+%===============================================================================
+
+The simulation file uses provisional standard deviations solely to generate
+one-standard-deviation impulse responses:
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+Shock & Dynare name & Baseline standard deviation \\
+\hline
+Foreign price & \(\varepsilon_F\) / \texttt{eps\_pf} & \(0.020\) \\
+World interest rate & \(\varepsilon_{i^*}\) / \texttt{eps\_iw} & \(0.010\) \\
+Country risk & \(\varepsilon_{rp}\) / \texttt{eps\_rp} & \(0.005\) \\
+Domestic monetary policy & \(\varepsilon_i\) / \texttt{eps\_i} & \(0.005\) \\
+Public investment & \(\varepsilon_{IG}\) / \texttt{eps\_ig} & \(0.020\) \\
+Government consumption & \(\varepsilon_G\) / \texttt{eps\_g} & \(0.010\) \\
+Tax revenue & \(\varepsilon_\tau\) / \texttt{eps\_tau} & \(0.005\) \\
+Productivity & \(\varepsilon_a\) / \texttt{eps\_a} & \(0.010\) \\
+Foreign demand & \(\varepsilon_{y^*}\) / \texttt{eps\_ystar} & \(0.010\) \\
+\hline
+\end{tabular}
+\end{center}
+
+These are not final empirical estimates.
+
+%===============================================================================
+\subsection{Steady-State Normalizations}
+\label{app:steady_state}
+%===============================================================================
+
+Because the model is entered into Dynare using \texttt{model(linear)}, every
+endogenous variable in the code has steady state zero. That does \emph{not}
+mean the economic steady-state levels are zero.
+
+For example,
+
+\[
+d_t=0
+\]
+
+in Dynare means
+
+\[
+D_t/Y_t=\bar d,
+\]
+
+and
+
+\[
+b_t=0
+\]
+
+means
+
+\[
+B_t/Y_t=\bar b.
+\]
+
+Similarly, the CPI inflation variable is a deviation around the benchmark gross
+inflation rate
+
+\begin{equation}
+\bar\Pi=(1.20)^{1/4}.
+\end{equation}
+
+Numerically,
+
+\begin{equation}
+\bar\Pi \approx 1.0466,
+\end{equation}
+
+so the benchmark is about \(4.66\%\) gross quarterly inflation, which
+compounds to \(20\%\) annually:
+
+\begin{equation}
+\bar\Pi^4=1.20.
+\end{equation}
+
+The model's steady-state goods-trade normalization is
+
+\[
+\overline{TB}=0.
+\]
+
+This does not imply that a country with positive foreign debt literally pays no
+interest in the full national accounts. Constant rollover/resource-transfer
+terms required to support the benchmark external debt ratio are absorbed into
+the local steady-state normalization of the parsimonious external debt law.
+
+%===============================================================================
+\subsection{Economic Transmission Mechanisms}
+\label{app:transmission}
+%===============================================================================
+
+\subsubsection{Foreign-price shock}
+
+A positive shock
+
+\[
+\varepsilon_{F,t}>0
+\]
+
+raises foreign imported-goods inflation:
+
+\[
+\pi_{F,t}^{*}\uparrow.
+\]
+
+From the terms-of-trade identity,
+
+\[
+s_t\uparrow
+\]
+
+unless the exchange rate or domestic inflation offsets the movement
+immediately.
+
+There are then three first-round channels.
+
+\paragraph{Channel 1: CPI inflation.}
+
+Equation \eqref{eq:cpi_final} gives
+
+\[
+\Delta s_t\uparrow
+\Rightarrow
+\pi_t\uparrow.
+\]
+
+\paragraph{Channel 2: domestic marginal cost.}
+
+Equation \eqref{eq:mc_final} gives
+
+\[
+s_t\uparrow
+\Rightarrow
+mc_t\uparrow
+\]
+
+because \(\lambda_s>0\).
+
+The indexed NKPC then implies
+
+\[
+mc_t\uparrow
+\Rightarrow
+\pi_{H,t}\uparrow.
+\]
+
+\paragraph{Channel 3: trade balance.}
+
+More expensive imports raise final and intermediate import expenditure:
+
+\[
+s_t\uparrow
+\Rightarrow
+\omega_{CF}(c_{F,t}+s_t)
++
+\omega_Z(z_t+s_t)
+\uparrow,
+\]
+
+which tends to reduce \(tb_t\).
+
+A trade deficit raises external debt:
+
+\[
+tb_t\downarrow
+\Rightarrow
+d_t\uparrow.
+\]
+
+Higher debt raises country risk:
+
+\[
+d_t\uparrow
+\Rightarrow
+rp_t\uparrow.
+\]
+
+\subsubsection{Inflation persistence}
+
+Even if the original foreign-price shock begins to disappear, equation
+\eqref{eq:nkpc_final} contains
+
+\[
+\gamma_I\pi_{H,t-1}.
+\]
+
+Therefore past inflation remains a determinant of current price setting.
+
+The model thus distinguishes the \emph{impact} mechanism from the
+\emph{propagation} mechanism:
+
+\[
+\text{foreign price}
+\rightarrow
+\text{marginal cost}
+\rightarrow
+\text{initial inflation},
+\]
+
+while
+
+\[
+\text{indexation}
+\rightarrow
+\text{persistence}.
+\]
+
+\subsubsection{Public-investment response}
+
+A positive
+
+\[
+\varepsilon_{IG,t}>0
+\]
+
+raises persistent public/SOE investment. Through the goods market it supports
+domestic demand. Through the fiscal financing identity it raises the financing
+requirement.
+
+Because taxes have no debt feedback, the burden is absorbed through the
+combination of seigniorage, external financing, and residual domestic debt.
+
+This makes the counterfactual
+
+\[
+\varepsilon_{F,t}>0,
+\qquad
+\varepsilon_{IG,t}=0
+\]
+
+economically meaningful: it represents the same external-price disturbance
+without the same development-policy expenditure response.
+
+\subsubsection{Why the second external-price shock can be larger}
+
+By the late 1970s, the economy can enter the second shock with
+
+\[
+d_t>0
+\]
+
+relative to the initial benchmark and with inflation already elevated through
+indexation.
+
+If the second foreign-price shock coincides with
+
+\[
+\varepsilon_{i^{*},t}>0,
+\]
+
+the external debt-service channel strengthens:
+
+\[
+i_t^{*}\uparrow
+\Rightarrow
+d_{t+1}\uparrow
+\Rightarrow
+rp_{t+1}\uparrow.
+\]
+
+Hence the same structural type of foreign-price shock can have different
+effects because the endogenous state of the economy is different.
+
+%===============================================================================
+\subsection{Fiscal Dominance, Inflation Taxation, and What the Model Means}
+\label{app:fiscal_dominance}
+%===============================================================================
+
+The model should not interpret ``fiscal dominance'' and ``inflation taxation''
+as mutually exclusive mechanisms.
+
+The fiscal configuration is characterized by
+
+\[
+\phi_{\tau b}=0,
+\]
+
+so taxes do not automatically rise to stabilize debt, while monetary policy
+satisfies
+
+\[
+\phi_\pi<1.
+\]
+
+At the same time, seigniorage is
+
+\[
+sg_t
+=
+\omega_M
+\left[
+m_t-\bar\Pi^{-1}m_{t-1}
++\bar\Pi^{-1}\pi_t
+\right].
+\]
+
+Thus monetary financing is one way in which the fiscal financing requirement
+can be accommodated.
+
+The inflation tax and seigniorage are related but not identical concepts.
+Seigniorage is the real revenue obtained through money creation. The inflation
+tax describes the erosion of the real value of existing nominal money
+balances. In the exact identity
+
+\[
+SG_t
+=
+\mathcal M_t-\frac{\mathcal M_{t-1}}{\Pi_t},
+\]
+
+both monetary expansion and the inflation-related erosion of inherited real
+balances are visible.
+
+%===============================================================================
+\subsection{From Structural Equations to a Linear Rational-Expectations System}
+\label{app:linear_system}
+%===============================================================================
+
+Dynare can represent the model schematically as
+
+\begin{equation}
+A_{-1}x_{t-1}
++
+A_0x_t
++
+A_{+1}\mathbb E_tx_{t+1}
++
+B\varepsilon_t
+=
+0,
+\label{eq:lre_system}
+\end{equation}
+
+where \(x_t\) collects the 26 endogenous variables and \(\varepsilon_t\)
+collects the nine structural shocks.
+
+The presence of \(A_{+1}\) means the model is forward looking. A valid
+rational-expectations solution must select a path consistent with both current
+equilibrium conditions and expectations of future variables.
+
+Dynare uses a generalized Schur decomposition to study the generalized
+eigenvalues of the system.
+
+%===============================================================================
+\subsection{Blanchard--Kahn Conditions and Determinacy}
+\label{app:bk}
+%===============================================================================
+
+The Blanchard--Kahn logic compares:
+
+\begin{enumerate}
+    \item the number of unstable generalized eigenvalues; and
+    \item the number of non-predetermined, forward-looking variables.
+\end{enumerate}
+
+A unique stable rational-expectations solution requires the appropriate
+matching between these objects.
+
+Three outcomes are conceptually distinct:
+
+\begin{description}
+    \item[Unique equilibrium:] the number of unstable roots matches the number
+    of forward-looking degrees of freedom.
+    \item[Indeterminacy:] too few unstable roots exist to pin down all jump
+    variables, so multiple equilibria may satisfy the linearized conditions.
+    \item[No stable equilibrium:] too many unstable roots exist, so no bounded
+    path satisfies all equilibrium conditions.
+\end{description}
+
+A historically weak monetary response \(\phi_\pi<1\) does not by itself prove
+indeterminacy. Determinacy depends on the full fiscal, monetary, debt, and
+forward-looking structure.
+
+This is why the running file uses both
+
+\begin{verbatim}
+check;
+model_diagnostics;
+\end{verbatim}
+
+before impulse-response analysis.
+
+%===============================================================================
+\subsection{Impulse Responses}
+\label{app:irfs}
+%===============================================================================
+
+Suppose the solved first-order law of motion is
+
+\begin{equation}
+x_t
+=
+Tx_{t-1}
++
+R\varepsilon_t.
+\label{eq:solution_law}
+\end{equation}
+
+For a one-time unit shock to component \(j\),
+
+\[
+\varepsilon_t=e_j,
+\]
+
+the impact response is
+
+\begin{equation}
+IRF_j(0)=Re_j.
+\end{equation}
+
+One period later,
+
+\begin{equation}
+IRF_j(1)=TRe_j,
+\end{equation}
+
+and generally,
+
+\begin{equation}
+\boxed{
+IRF_j(h)
+=
+T^hRe_j.
+}
+\label{eq:irf_formula}
+\end{equation}
+
+Dynare's \texttt{stoch\_simul(order=1,irf=40)} reports responses to a
+one-standard-deviation innovation, not necessarily to a unit shock. Therefore
+the amplitude of an IRF depends on the shock standard deviation declared in the
+\texttt{shocks} block.
+
+%===============================================================================
+\subsection{State-Space Representation for Estimation}
+\label{app:state_space}
+%===============================================================================
+
+Once the model is estimated, its solution can be written as a transition
+equation
+
+\begin{equation}
+s_t
+=
+Ts_{t-1}
++
+R\varepsilon_t,
+\qquad
+\varepsilon_t\sim\mathcal N(0,Q),
+\label{eq:transition}
+\end{equation}
+
+where \(s_t\) is the model state vector.
+
+Observed data \(y_t^{obs}\) are connected to model variables through a
+measurement equation
+
+\begin{equation}
+y_t^{obs}
+=
+Zs_t
++
+d
++
+v_t,
+\qquad
+v_t\sim\mathcal N(0,H).
+\label{eq:measurement}
+\end{equation}
+
+The matrices \(Z\) and \(d\) encode data transformations and steady-state
+mappings. Measurement error \(v_t\) should only be added when justified by the
+data, not simply to force estimation to work.
+
+%===============================================================================
+\subsection{Candidate Observables and Measurement Logic}
+\label{app:observables}
+%===============================================================================
+
+Natural observables for this model include:
+
+\begin{enumerate}
+    \item CPI inflation;
+    \item domestic-goods or wholesale inflation if available;
+    \item real or detrended output;
+    \item domestic nominal interest rate;
+    \item real monetary balances;
+    \item trade balance as a fraction of GDP;
+    \item consolidated public external debt as a fraction of GDP;
+    \item public/SOE investment;
+    \item effective tax revenue as a fraction of GDP;
+    \item foreign/import-price inflation;
+    \item world interest rates; and
+    \item foreign activity.
+\end{enumerate}
+
+The measurement equation must respect the units of the structural model.
+
+For example, if observed quarterly inflation is measured as a decimal rate,
+
+\begin{equation}
+\pi_t^{obs}
+=
+\bar\pi+\pi_t.
+\end{equation}
+
+If the data are reported in percent,
+
+\begin{equation}
+\pi_t^{obs,\%}
+=
+100(\bar\pi+\pi_t).
+\end{equation}
+
+A debt-to-GDP series maps differently because \(d_t\) is already a ratio
+deviation:
+
+\begin{equation}
+d_t^{obs}
+=
+\bar d+d_t.
+\end{equation}
+
+The trade balance is likewise a GDP-ratio deviation rather than a logged
+quantity.
+
+%===============================================================================
+\subsection{Data Transformations}
+\label{app:data_transformations}
+%===============================================================================
+
+A central econometric rule is:
+
+\begin{quote}
+Transform the data to match the model; do not reinterpret the model after
+seeing the data.
+\end{quote}
+
+For a logged real variable such as output, a common measurement relation is
+
+\begin{equation}
+100\left[
+\log Y_t^{data}
+-
+\log \bar Y_t^{trend}
+\right]
+=
+100y_t.
+\end{equation}
+
+For an annual inflation rate converted to a gross quarterly rate,
+
+\begin{equation}
+\Pi_q
+=
+(1+\pi_{annual})^{1/4}.
+\end{equation}
+
+For the baseline annual inflation rate of \(20\%\),
+
+\begin{equation}
+\Pi_q=(1.20)^{1/4}.
+\end{equation}
+
+Interest-rate conversions must also respect compounding. If \(i_a\) is an
+effective annual rate, the corresponding quarterly rate is
+
+\begin{equation}
+i_q
+=
+(1+i_a)^{1/4}-1.
+\end{equation}
+
+When historical data are only annual, interpolation does not create genuine
+quarterly information. Such series may require mixed-frequency methods,
+careful measurement-error treatment, or calibration rather than mechanical
+quarterly interpolation.
+
+%===============================================================================
+\subsection{Likelihood and the Kalman Filter}
+\label{app:kalman}
+%===============================================================================
+
+Under Gaussian shocks and a linear state-space representation, the Kalman
+filter recursively computes the distribution of the latent state conditional
+on observed data.
+
+Let
+
+\[
+\widehat s_{t|t-1}
+\]
+
+be the predicted state and
+
+\[
+P_{t|t-1}
+\]
+
+its covariance matrix.
+
+The one-step-ahead forecast error is
+
+\begin{equation}
+u_t
+=
+y_t^{obs}
+-
+Z\widehat s_{t|t-1}
+-d.
+\end{equation}
+
+Its covariance is
+
+\begin{equation}
+F_t
+=
+ZP_{t|t-1}Z'
++
+H.
+\end{equation}
+
+The Gaussian log-likelihood contribution is
+
+\begin{equation}
+\ell_t
+=
+-\frac{1}{2}
+\left[
+n_y\log(2\pi)
++
+\log|F_t|
++
+u_t'F_t^{-1}u_t
+\right].
+\end{equation}
+
+Therefore total log likelihood is
+
+\begin{equation}
+\boxed{
+\log L(\vartheta)
+=
+\sum_{t=1}^{T}\ell_t,
+}
+\label{eq:likelihood}
+\end{equation}
+
+where \(\vartheta\) denotes the vector of estimated structural parameters.
+
+%===============================================================================
+\subsection{Bayesian Estimation}
+\label{app:bayesian}
+%===============================================================================
+
+Bayesian estimation combines the likelihood with prior information:
+
+\begin{equation}
+\boxed{
+p(\vartheta\mid Y)
+\propto
+L(Y\mid\vartheta)p(\vartheta).
+}
+\label{eq:bayes}
+\end{equation}
+
+Here
+
+\[
+p(\vartheta)
+\]
+
+is the prior density,
+
+\[
+L(Y\mid\vartheta)
+\]
+
+is the likelihood generated by the solved DSGE and measurement system, and
+
+\[
+p(\vartheta\mid Y)
+\]
+
+is the posterior density.
+
+The posterior mode is not the only object of interest. For the key historical
+parameters, the paper should report posterior uncertainty.
+
+Examples include
+
+\[
+\Pr(\phi_\pi<1\mid Y),
+\]
+
+and credible intervals for
+
+\[
+\gamma_I,\quad
+\phi_D,\quad
+\phi_{\Delta D},\quad
+\phi_E.
+\]
+
+These quantities directly test the mechanisms emphasized by the paper.
+
+%===============================================================================
+\subsection{Identification}
+\label{app:identification}
+%===============================================================================
+
+A parameter is identified when distinct values of that parameter imply
+distinguishably different distributions of observables.
+
+The most important identification pairs in this model are:
+
+\begin{description}
+    \item[\(\gamma_I\) versus \(\theta\):]
+    both affect inflation persistence/dynamics, so inflation alone may not
+    sharply separate them.
+
+    \item[\(\phi_D\) versus \(\phi_{\Delta D}\):]
+    both affect the risk premium. Debt levels and debt changes must contain
+    enough independent variation to identify them separately.
+
+    \item[\(\phi_\pi\) versus \(\rho_i\):]
+    interest-rate smoothing can make a policy rule look weak in the short run
+    even when its long-run inflation response is larger.
+
+    \item[\(\phi_E\) versus \(\varepsilon_i\):]
+    external-financing reactions must be distinguished from autonomous
+    domestic policy shocks.
+
+    \item[\(\eta_{mi}\) versus monetary shock volatility:]
+    a strong money-demand interest sensitivity and a highly volatile monetary
+    shock can both generate large real-balance movements.
+
+    \item[\(\mu\) versus foreign-price shock volatility:]
+    imported-input exposure determines transmission strength, while shock
+    variance determines the size of the impulse. They should not be allowed to
+    substitute freely without data discipline.
+\end{description}
+
+Identification should therefore be checked before interpreting posterior
+distributions economically.
+
+%===============================================================================
+\subsection{Why Some Parameters Are Calibrated and Others Estimated}
+\label{app:calibration_estimation}
+%===============================================================================
+
+The paper's central mechanism should not be obtained by calibrating the key
+parameters to convenient values. Parameters such as
+
+\[
+\gamma_I,\quad
+\phi_\pi,\quad
+\phi_E,\quad
+\phi_D,\quad
+\phi_{\Delta D}
+\]
+
+should, where data permit, face the historical evidence.
+
+By contrast, preference parameters that are weakly identified over a short
+historical sample, and accounting shares observed directly in national
+accounts, are natural calibration candidates.
+
+Derived quantities such as
+
+\[
+\lambda_s=\mu+(1-\mu)\alpha,
+\]
+
+\[
+\kappa=\frac{(1-\theta)(1-\beta\theta)}{\theta},
+\]
+
+and
+
+\[
+\bar\Pi^{-1}
+\]
+
+must not be estimated independently because doing so would violate the model's
+own algebra.
+
+%===============================================================================
+\subsection{Forecast-Error Variance Decomposition}
+\label{app:fevd}
+%===============================================================================
+
+Let the \(h\)-step-ahead forecast error of variable \(j\) be generated by all
+structural shocks over the forecast horizon. The forecast-error variance
+decomposition measures the fraction of that variance attributable to each
+shock.
+
+Conceptually,
+
+\begin{equation}
+FEVD_{j,k}(h)
+=
+\frac{
+\text{variance of the }h\text{-step forecast error in }j
+\text{ caused by shock }k
+}{
+\text{total }h\text{-step forecast-error variance of }j
+}.
+\end{equation}
+
+For this paper, useful questions include:
+
+\begin{itemize}
+    \item How much of inflation variance is due to foreign-price shocks?
+    \item How much comes from monetary-policy shocks?
+    \item How much of external-debt variance is due to trade shocks versus
+    world-rate shocks?
+    \item Does public-investment policy account for meaningful output and debt
+    fluctuations?
+\end{itemize}
+
+%===============================================================================
+\subsection{Historical Decomposition}
+\label{app:historical_decomposition}
+%===============================================================================
+
+A historical decomposition reconstructs the observed path of a model variable
+as the accumulated contribution of realized structural shocks plus the
+contribution of initial conditions.
+
+Schematically,
+
+\begin{equation}
+x_t
+=
+x_t^{init}
++
+\sum_k x_{t}^{(\varepsilon_k)}.
+\end{equation}
+
+This is especially important for the paper because the historical question is
+not merely whether a foreign-price shock \emph{can} raise inflation, but how
+much of the actual 1970s inflation path the estimated model attributes to:
+
+\[
+\varepsilon_F,\quad
+\varepsilon_{IG},\quad
+\varepsilon_{i^*},\quad
+\varepsilon_{rp},\quad
+\varepsilon_i,
+\]
+
+and the endogenous propagation of these shocks through indexation and debt.
+
+%===============================================================================
+\subsection{Counterfactual Experiments}
+\label{app:counterfactuals}
+%===============================================================================
+
+The model is particularly well suited to nested counterfactuals.
+
+\subsubsection{No indexation}
+
+Set
+
+\[
+\gamma_I=0.
+\]
+
+The difference between the baseline and this counterfactual measures how much
+persistence is generated by backward price indexation.
+
+\subsubsection{No debt-acceleration premium}
+
+Set
+
+\[
+\phi_{\Delta D}=0.
+\]
+
+This isolates the incremental contribution of rapidly rising debt to external
+financing conditions.
+
+\subsubsection{No imported-input cost channel}
+
+Set
+
+\[
+\mu=0.
+\]
+
+This removes the direct imported intermediate-input component from marginal
+cost, although CPI imported inflation through \(\alpha\) remains.
+
+\subsubsection{No public-investment policy response}
+
+Set the historical public-investment shock to zero:
+
+\[
+\varepsilon_{IG,t}=0
+\]
+
+during the relevant episode.
+
+\subsubsection{Active monetary stabilization}
+
+For a purely counterfactual experiment, set
+
+\[
+\phi_\pi>1.
+\]
+
+This asks how the same external shocks would propagate under a much more
+aggressive inflation response. It is not the baseline historical regime.
+
+\subsubsection{No world-rate shock in 1979}
+
+Set
+
+\[
+\varepsilon_{i^*,t}=0
+\]
+
+during the second episode. The difference measures the role of deteriorating
+global financing conditions conditional on the inherited debt stock.
+
+%===============================================================================
+\subsection{Common Conceptual Errors to Avoid}
+\label{app:errors}
+%===============================================================================
+
+\begin{enumerate}
+    \item \textbf{Do not reintroduce a household foreign bond.}
+    External borrowing is consolidated public-sector debt in the final model.
+
+    \item \textbf{Do not call \(s_t\) an oil price.}
+    It is the terms of trade \(P_F/P_H\). Oil shocks are represented through
+    \(\varepsilon_F\).
+
+    \item \textbf{Do not put \(\varepsilon_F\) directly into the NKPC.}
+    It already affects CPI inflation and marginal cost through \(s_t\).
+
+    \item \textbf{Do not add an output gap to the monetary rule.}
+    The final historical rule has \(\phi_y=0\).
+
+    \item \textbf{Do not add debt feedback to taxes.}
+    The final post-1973 tax process has \(\phi_{\tau b}=0\).
+
+    \item \textbf{Do not treat the trade balance as government revenue.}
+    It belongs to the external resource/debt block.
+
+    \item \textbf{Do not log-linearize a zero steady-state trade balance.}
+    Use a level deviation relative to steady-state GDP.
+
+    \item \textbf{Do not estimate derived parameters independently.}
+    In particular, \(\lambda_s\), \(\kappa\), and \(\bar\Pi^{-1}\) are
+    algebraically determined.
+
+    \item \textbf{Do not interpret \(\phi_\pi<1\) as sufficient evidence of
+    indeterminacy.}
+    Determinacy is a property of the complete rational-expectations system.
+
+    \item \textbf{Do not interpret every equation as a deep structural FOC.}
+    The money-demand equation, risk-premium equation, and debt laws contain
+    deliberate semi-structural elements.
+
+    \item \textbf{Do not confuse a one-standard-deviation IRF with a unit shock.}
+    Dynare scales IRFs by the standard deviation in the \texttt{shocks} block.
+
+    \item \textbf{Do not interpret a large simulated debt path as proof of
+    historical accuracy.}
+    Historical validation requires estimation, decomposition, and
+    counterfactual comparison.
+\end{enumerate}
+
+%===============================================================================
+\subsection{Dynare-to-Mathematics Dictionary}
+\label{app:dynare_dictionary}
+%===============================================================================
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+Dynare & Mathematics & Meaning \\
+\hline
+\texttt{c} & \(c_t\) & aggregate consumption \\
+\texttt{n} & \(n_t\) & labor \\
+\texttt{y} & \(y_t\) & domestic output \\
+\texttt{z} & \(z_t\) & imported intermediate-input volume \\
+\texttt{mc} & \(mc_t\) & real marginal cost \\
+\texttt{piH} & \(\pi_{H,t}\) & domestic-goods inflation \\
+\texttt{pi} & \(\pi_t\) & CPI inflation \\
+\texttt{s} & \(s_t\) & terms of trade, \(\log(P_F/P_H)\) \\
+\texttt{e} & \(e_t\) & nominal exchange rate \\
+\texttt{i} & \(i_t\) & domestic nominal rate \\
+\texttt{m} & \(m_t\) & real money balances \\
+\texttt{ch} & \(c_{H,t}\) & domestic household consumption \\
+\texttt{cf} & \(c_{F,t}\) & imported household consumption \\
+\texttt{x} & \(x_t\) & exports \\
+\texttt{tb} & \(tb_t\) & trade balance / GDP deviation \\
+\texttt{d} & \(d_t\) & external public debt / GDP deviation \\
+\texttt{rp} & \(rp_t\) & country-risk premium \\
+\texttt{istar} & \(i_t^*\) & world interest rate \\
+\texttt{ig} & \(ig_t\) & public/SOE investment \\
+\texttt{g} & \(g_t\) & ordinary government consumption \\
+\texttt{tau} & \(\tau_t\) & tax revenue / GDP deviation \\
+\texttt{b} & \(b_t\) & domestic public debt / GDP deviation \\
+\texttt{sg} & \(sg_t\) & seigniorage / GDP deviation \\
+\texttt{pif} & \(\pi_{F,t}^*\) & foreign imported-goods inflation \\
+\texttt{a} & \(a_t\) & productivity \\
+\texttt{ystar} & \(y_t^*\) & foreign activity \\
+\hline
+\end{tabular}
+\end{center}
+
+%===============================================================================
+\subsection{A Step-by-Step Reading Strategy}
+\label{app:reading_strategy}
+%===============================================================================
+
+When returning to the model after time away, the most efficient order is:
+
+\begin{enumerate}
+    \item Start with equations (2), (3), (8), and (9) to reconstruct the
+    Gal\'i--Monacelli open-economy price system.
+
+    \item Read equations (5)--(7) to understand how imported intermediate
+    inputs convert the foreign relative-price movement into domestic marginal
+    cost.
+
+    \item Read equation (11) to understand why the initial cost increase becomes
+    persistent domestic inflation.
+
+    \item Read equations (12)--(16) to follow the trade-balance, external-debt,
+    and risk-premium feedback.
+
+    \item Read equations (18)--(19) jointly: sovereign UIP explains market
+    pricing, while the policy rule describes the domestic authority's behavior.
+
+    \item Read equations (4) and (20) jointly to understand real money demand and
+    seigniorage.
+
+    \item Read equations (21)--(24) to understand why taxes do not close the
+    fiscal system and why domestic debt becomes the residual financing
+    instrument.
+
+    \item Finally, return to equation (1). The Euler equation shows how the
+    nominal-rate/inflation combination feeds back into aggregate demand.
+\end{enumerate}
+
+%===============================================================================
+\subsection{Compact Causal Map}
+\label{app:causal_map}
+%===============================================================================
+
+The first historical external-price episode is summarized by
+
+\begin{equation}
+\varepsilon_{F,t}>0
+\Rightarrow
+\pi_{F,t}^{*}\uparrow
+\Rightarrow
+s_t\uparrow.
+\end{equation}
+
+Then
+
+\begin{equation}
+s_t\uparrow
+\Rightarrow
+\begin{cases}
+\pi_t\uparrow,\\
+mc_t\uparrow,\\
+tb_t\downarrow.
+\end{cases}
+\end{equation}
+
+The cost channel gives
+
+\begin{equation}
+mc_t\uparrow
+\Rightarrow
+\pi_{H,t}\uparrow,
+\end{equation}
+
+while indexation gives
+
+\begin{equation}
+\pi_{H,t}\uparrow
+\Rightarrow
+\pi_{H,t+1},\pi_{H,t+2},\ldots
+\text{ remain elevated}.
+\end{equation}
+
+The external channel gives
+
+\begin{equation}
+tb_t\downarrow
+\Rightarrow
+d_t\uparrow
+\Rightarrow
+rp_t\uparrow.
+\end{equation}
+
+The fiscal-development response can simultaneously generate
+
+\begin{equation}
+\varepsilon_{IG,t}>0
+\Rightarrow
+ig_t\uparrow
+\Rightarrow
+\text{financing requirement}\uparrow.
+\end{equation}
+
+Because taxes do not respond to debt and monetary policy reacts weakly to
+inflation, adjustment occurs through the interaction of
+
+\[
+sg_t,\qquad b_t,\qquad d_t,
+\]
+
+with domestic interest rates also influenced by
+
+\[
+i_t^*+rp_t.
+\]
+
+In the later episode, a positive world-rate shock adds
+
+\begin{equation}
+\varepsilon_{i^*,t}>0
+\Rightarrow
+i_t^*\uparrow
+\Rightarrow
+\text{external debt service}\uparrow,
+\end{equation}
+
+when inherited external debt is already larger.
+
+%===============================================================================
+\subsection{Final Consistency Checklist}
+\label{app:consistency_checklist}
+%===============================================================================
+
+The final baseline is internally defined by the following restrictions:
+
+\begin{align}
+&\text{Endogenous variables}=26,\\
+&\text{Equations}=26,\\
+&\text{Household foreign bond}=0,\\
+&\text{Explicit oil variable}=0,\\
+&\text{Direct oil/foreign-price shock in NKPC}=0,\\
+&\phi_y=0,\\
+&\phi_{\tau b}=0,\\
+&\phi_\pi<1\ \text{in the historical baseline},\\
+&\lambda_s=\mu+(1-\mu)\alpha,\\
+&\kappa=\frac{(1-\theta)(1-\beta\theta)}{\theta},\\
+&\omega_{CH}+\omega_X+\omega_G+\omega_{IG}=1,\\
+&\omega_{CF}+\omega_Z=\omega_X.
+\end{align}
+
+Any future extension that changes one of these restrictions should be treated
+as a new model version rather than silently folded into the baseline.
+
+%===============================================================================
+\subsection{Summary}
+\label{app:summary}
+%===============================================================================
+
+The model's economic architecture can be summarized in six blocks:
+
+\begin{enumerate}
+    \item \textbf{Households:} consumption smoothing, labor supply, domestic
+    bond demand, and money demand.
+
+    \item \textbf{Open-economy prices:} a Gal\'i--Monacelli consumption
+    aggregator, the terms of trade, and imported CPI inflation.
+
+    \item \textbf{Production and pricing:} imported intermediate inputs raise
+    marginal cost when foreign goods become expensive, while indexed Calvo
+    pricing propagates domestic inflation.
+
+    \item \textbf{External finance:} trade deficits accumulate consolidated
+    public external debt, which feeds into country risk, while world interest
+    rates provide a separate global financing shock.
+
+    \item \textbf{Monetary and fiscal policy:} monetary policy responds weakly
+    to inflation and to external financing pressure; taxes do not
+    automatically stabilize debt; public investment is a separate policy
+    process; seigniorage is endogenous.
+
+    \item \textbf{Debt closure:} domestic public debt is the residual financing
+    instrument after taxes, seigniorage, and net external financing.
+\end{enumerate}
+
+Mathematically, the model is a 26-equation linear rational-expectations system.
+Statistically, once measurement equations are added, it becomes a linear
+state-space model that can be estimated with likelihood-based or Bayesian
+methods and analyzed through impulse responses, forecast-error variance
+decompositions, historical decompositions, and counterfactual simulations.
+
+The central empirical question is therefore not whether the model can be made
+to generate high inflation. The central question is whether Brazilian data
+assign quantitatively important roles to the structural mechanisms represented
+by
+
+\[
+\gamma_I,\quad
+\phi_\pi,\quad
+\phi_E,\quad
+\phi_D,\quad
+\phi_{\Delta D},\quad
+\mu,\quad
+\rho_{IG},\quad
+\eta_{mi},
+\]
+
+and whether the full model explains the historical interaction among foreign
+prices, inflation inertia, external indebtedness, seigniorage, public
+investment, and weak monetary stabilization better than restricted versions
+that remove those channels.

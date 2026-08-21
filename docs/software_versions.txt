@@ -1,0 +1,10 @@
+Software versions used for the project
+
+R: [FILL AFTER RUNNING R.version.string]
+RStudio: [FILL]
+Git: [FILL]
+Dynare: 6.4.0 [CONFIRM]
+GNU Octave / MATLAB: [FILL]
+Operating system: Windows [FILL VERSION]
+
+Update this file whenever the main computational environment changes.

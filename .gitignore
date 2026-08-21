@@ -1,0 +1,31 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+Thumbs.db
+
+# renv local files that should not be committed
+renv/library/
+renv/staging/
+renv/local/
+
+# Dynare / Octave generated output and caches
+*.log
+*.mat
+*.eps
+*.fig
+*.asv
+*_results.mat
+*_dynamic.m
+*_static.m
+*_set_auxiliary_variables.m
+*_steadystate2.m
+*_driver.m
+*_results/
++*/
+
+# Temporary files
+*.tmp
+*.bak
+~$*
