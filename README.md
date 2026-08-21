@@ -170,3 +170,4 @@ The file in `dynare/baseline/` is the frozen working model. Do not overwrite it 
 
 When the estimation stage begins, work in `dynare/estimation/`.
 "# brazil-inflation-dsge" 
+"# brazil-inflation-dsge" 
