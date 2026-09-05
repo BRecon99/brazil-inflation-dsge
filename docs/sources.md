@@ -11,6 +11,23 @@ parameters/data and sources belong in the CSV registries.
 - First-stage sample: 1964Q1–1972Q4
 - Transformation: monthly average to quarterly; annual percent to effective quarterly decimal
 
+
+## Brazilian consumer inflation
+
+ - índice (jan. 1967 = 100) - INATIVA - - - Outras fontes, inclusive compilação de vários autores - G - 
+- Institution: Ipea
+- Series: IGPC-Mtb - Índice Geral de Preços ao Consumidor
+- Series code: GAMMA12_IGPCMTB12
+- Frequency: Monthly
+- Raw unit: [INDEX LEVEL / MONTHLY % CHANGE]
+- First observation: [DATE]
+- Local file: data/raw/IPC_FGV.csv
+- Download date: YYYY-MM-DD
+- Source URL: [SOURCE]
+- Geographic coverage during 1968–1972: [VERIFY FROM METADATA]
+- Purpose: Calibration of Pi_ss and inflation observable
+- Redistribution: [VERIFY]
+
 ## Future sources
 
 Add one subsection per raw dataset. Record:

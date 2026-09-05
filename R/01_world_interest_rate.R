@@ -1,6 +1,7 @@
 # =============================================================================
 # 01_world_interest_rate.R
-# First reproducible parameter estimate: rho_i*
+# 
+# parameter estimate: rho_i*
 #
 # Model equation:
 #   i_t^* = rho_i* i_{t-1}^* + epsilon_{i*,t}

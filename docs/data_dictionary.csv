@@ -1,11 +1,11 @@
-﻿dataset_name,model_variable,series_code,description,raw_frequency,raw_units,transformation,target_sample,local_file,status,purpose
-world_interest_rate,i_star,TB3MS,3-Month Treasury Bill rate,Monthly,Annualized percent,Average monthly observations within quarter; convert annual percent to effective quarterly decimal,1964-01 to 1980-12,data/raw/TB3MS.csv,READY,Estimate rho_i* and sigma_eps_i*
-brazil_cpi_inflation,pi,,Brazil price index / inflation,Monthly or quarterly,,TODO: choose historically consistent price index and construct quarterly inflation,1964-1980,,TODO,Observable; calibrate Pi_ss and later DSGE estimation
-foreign_price_inflation,pi_F_star,,Foreign/import price index relevant to Brazil,Quarterly preferred,,TODO,1964-1980,,TODO,Estimate rho_F; external-price shock
-foreign_output,y_star,,Trade-weighted foreign activity,Quarterly,,TODO,1964-1980,,TODO,Estimate rho_y*; export demand
-trade_balance_gdp,tb,,Trade balance / GDP,Quarterly,,TODO,1964-1980,,TODO,DSGE observable
-external_public_debt_gdp,d,,Consolidated public external debt / GDP,Quarterly or annual,,TODO,1964-1980,,TODO,Calibrate dbar; identify phiD and phiDD
-real_money_balances,m,,Monetary base or selected aggregate deflated by CPI,Monthly -> quarterly,,TODO,1964-1980,,TODO,Money demand / seigniorage
-public_investment_gdp,ig,,Public/SOE investment / GDP,Quarterly or annual,,TODO,1964-1980,,TODO,Calibrate ig_y; estimate rhoIG
-tax_revenue_gdp,tau,,Effective tax revenue / GDP,Quarterly or annual,,TODO,1964-1980,,TODO,Tax process / steady state
-domestic_interest_rate,i,,Brazilian nominal policy/market rate appropriate to period,Monthly or quarterly,,TODO,1964-1980,,TODO,Monetary rule and Euler equation
+"dataset_name","model_variable","series_code","description","raw_frequency","raw_units","transformation","target_sample","local_file","status","purpose"
+"world_interest_rate","i_star","TB3MS","3-Month Treasury Bill rate","Monthly","Annualized percent","Average monthly observations within quarter; convert annual percent to effective quarterly decimal","1964-01 to 1980-12","data/raw/TB3MS.csv","READY","Estimate rho_i* and sigma_eps_i*"
+"brazil_cpi_inflation","pi","GAMMA12_IGPCMTB12","IGPC-Mtb - Índice Geral de Preços ao Consumidor. Historical monthly consumer price index. Index base: January 1967 = 100.","Monthly","Index level","Monthly gross inflation = P_t / P_(t-1); quarterly gross inflation obtained by compounding monthly gross inflation; Pi_ss calibrated using the geometric mean of quarterly gross inflation.","Full historical series retained; baseline Pi_ss calibration: 1968Q1-1972Q4; robustness: 1967Q1-1972Q4 and 1964Q1-1972Q4.","data/raw/IGPC_ipeadata.csv","PROCESSED - Pi_ss CALIBRATION COMPLETE","Calibrate steady-state gross quarterly inflation Pi_ss; derive invPi; construct Brazilian quarterly inflation series for later DSGE estimation."
+"foreign_price_inflation","pi_F_star","","Foreign/import price index relevant to Brazil","Quarterly preferred","","TODO","1964-1980","","TODO","Estimate rho_F; external-price shock"
+"foreign_output","y_star","","Trade-weighted foreign activity","Quarterly","","TODO","1964-1980","","TODO","Estimate rho_y*; export demand"
+"trade_balance_gdp","tb","","Trade balance / GDP","Quarterly","","TODO","1964-1980","","TODO","DSGE observable"
+"external_public_debt_gdp","d","","Consolidated public external debt / GDP","Quarterly or annual","","TODO","1964-1980","","TODO","Calibrate dbar; identify phiD and phiDD"
+"real_money_balances","m","","Monetary base or selected aggregate deflated by CPI","Monthly -> quarterly","","TODO","1964-1980","","TODO","Money demand / seigniorage"
+"public_investment_gdp","ig","","Public/SOE investment / GDP","Quarterly or annual","","TODO","1964-1980","","TODO","Calibrate ig_y; estimate rhoIG"
+"tax_revenue_gdp","tau","","Effective tax revenue / GDP","Quarterly or annual","","TODO","1964-1980","","TODO","Tax process / steady state"
+"domestic_interest_rate","i","","Brazilian nominal policy/market rate appropriate to period","Monthly or quarterly","","TODO","1964-1980","","TODO","Monetary rule and Euler equation"
