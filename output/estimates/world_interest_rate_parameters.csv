@@ -1,0 +1,3 @@
+"dynare_name","symbol","estimate","standard_error","shock_sd","sample","method","raw_series","status","notes"
+"rhoiw","rho_i_star",0.862905157460886,0.0809055828614261,0.00129777268138612,"1964Q1-1972Q4","OLS AR(1) on quarterly effective rate","FRED TB3MS","FIRST-STAGE ESTIMATE COMPLETE","Recommended pre-shock persistence estimate from 1964Q1-1972Q4."
+"rstar_ss","r_star_ss",0.012521728337025,NA,NA,"1964Q1-1972Q4","Implied AR(1) steady state: constant / (1 - rhoiw)","FRED TB3MS","FIRST-STAGE DERIVED ESTIMATE COMPLETE","Steady-state quarterly foreign interest rate implied by estimated AR(1)."

@@ -1,2 +1,0 @@
-"dynare_parameter","model_symbol","estimate","standard_error","shock_sd_eps_iw","long_run_quarterly_rate","sample","method","raw_series","status"
-"rhoiw","rho_i_star",0.862905157460886,0.0809055828614261,0.00129777268138612,0.012521728337025,"1964Q1-1972Q4","OLS AR(1) on quarterly effective rate","FRED TB3MS","FIRST-STAGE ESTIMATE COMPLETE"
