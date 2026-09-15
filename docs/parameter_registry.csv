@@ -34,6 +34,6 @@
 "rhoG","ρ_G","Fiscal policy","Estimated",0.8,,"TODO","","","","",,,""
 "rhoIG","ρ_IG","Fiscal policy / II-PND","Estimated",0.95,,"TODO","","","","",,,""
 "rhoa","ρ_a","Technology","Estimated",0.9,,"TODO","","","","",,,""
-"rhoystar","ρ_y*","Foreign activity","Estimated",0.85,,"TODO","","","","",,,""
+"rhoystar","ρ_y*","Foreign activity","Estimated",0.85,0.823526254909138,"FIRST-STAGE ESTIMATE COMPLETE","OLS AR(1) without intercept on HP-filtered log U.S. real GDP cycle","1964Q1-1972Q4","data/raw/GDPC1.csv","FRED GDPC1 / U.S. Bureau of Economic Analysis",0.103944034516404,0.00816522021117688,"Recommended pre-oil-shock estimate. ystar is the cyclical log deviation of U.S. real GDP from HP trend. rhoF is not estimated by this script.  Detrending window: 1947Q1-1980Q4. Robustness estimates: output/estimates/foreign_output_ar1.csv."
 "rdom_ss","r̄_d","Domestic debt / steady state","Calibrated",0.01,,"TODO","","","","",,,""
 "bbar","b̄","Domestic debt / steady state","Calibrated",0.2,,"TODO","","","","",,,""

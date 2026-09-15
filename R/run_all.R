@@ -1,45 +1,54 @@
 # =============================================================================
-# RUN ALL EMPIRICAL RESEARCH SCRIPTS
+# run_all.R
+#
+# Run all parameter-estimation modules and then update the parameter registry.
 # =============================================================================
 
+rm(list = ls())
+
+
+scripts <- c(
+  "R/01_world_interest_rate.R",
+  "R/02_foreign_output.R",
+  "R/03_brazil_inflation_steady_state.R",
+  "R/99_update_parameter_registry.R"
+)
+
+
+for (script in scripts) {
+  
+  cat("\n\n")
+  cat("============================================================\n")
+  cat("RUNNING:", script, "\n")
+  cat("============================================================\n\n")
+  
+  
+  if (!file.exists(script)) {
+    
+    stop(
+      "Cannot find script: ",
+      script
+    )
+  }
+  
+  
+  script_environment <- new.env(
+    parent = globalenv()
+  )
+  
+  
+  sys.source(
+    script,
+    envir = script_environment
+  )
+  
+  
+  rm(
+    script_environment
+  )
+}
+
+
 cat("\n============================================================\n")
-cat("STARTING EMPIRICAL PIPELINE\n")
-cat("============================================================\n")
-
-
-cat("\n[1/3] World interest-rate estimation\n")
-
-source(
-  file.path(
-    "R",
-    "01_world_interest_rate.R"
-  ),
-  local = new.env()
-)
-
-
-cat("\n[2/3] Updating world-rate parameter registry\n")
-
-source(
-  file.path(
-    "R",
-    "02_update_parameter_registry.R"
-  ),
-  local = new.env()
-)
-
-
-cat("\n[3/3] Brazilian steady-state inflation calibration\n")
-
-source(
-  file.path(
-    "R",
-    "03_brazil_inflation_steady_state.R"
-  ),
-  local = new.env()
-)
-
-
-cat("\n============================================================\n")
-cat("EMPIRICAL PIPELINE COMPLETED SUCCESSFULLY\n")
+cat("FULL PARAMETER PIPELINE COMPLETED SUCCESSFULLY\n")
 cat("============================================================\n")

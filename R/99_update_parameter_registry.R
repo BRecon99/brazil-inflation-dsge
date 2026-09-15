@@ -287,6 +287,115 @@ registry$notes[
 )
 
 
+# =============================================================================
+# FOREIGN OUTPUT: rhoystar
+# =============================================================================
+
+foreign_output_file <- file.path(
+  "output",
+  "estimates",
+  "foreign_output_parameters.csv"
+)
+
+
+if (!file.exists(foreign_output_file)) {
+  
+  stop(
+    "Cannot find output/estimates/foreign_output_parameters.csv. ",
+    "Run R/02_foreign_output.R first."
+  )
+}
+
+
+foreign_output <- read.csv(
+  foreign_output_file,
+  stringsAsFactors = FALSE
+)
+
+
+rhoystar_estimate <- foreign_output[
+  foreign_output$dynare_name == "rhoystar",
+]
+
+
+if (nrow(rhoystar_estimate) != 1) {
+  
+  stop(
+    "Expected exactly one rhoystar estimate."
+  )
+}
+
+
+rhoystar_registry_row <- which(
+  registry$dynare_name == "rhoystar"
+)
+
+
+if (length(rhoystar_registry_row) != 1) {
+  
+  stop(
+    "Expected exactly one rhoystar row in parameter registry."
+  )
+}
+
+
+registry$classification[
+  rhoystar_registry_row
+] <- "Estimated"
+
+
+registry$research_value[
+  rhoystar_registry_row
+] <- rhoystar_estimate$estimate
+
+
+registry$status[
+  rhoystar_registry_row
+] <- rhoystar_estimate$status
+
+
+registry$method[
+  rhoystar_registry_row
+] <- rhoystar_estimate$method
+
+
+registry$sample[
+  rhoystar_registry_row
+] <- rhoystar_estimate$sample
+
+
+registry$raw_or_primary_data[
+  rhoystar_registry_row
+] <- "data/raw/GDPC1.csv"
+
+
+registry$source_or_literature[
+  rhoystar_registry_row
+] <- "FRED GDPC1 / U.S. Bureau of Economic Analysis"
+
+
+registry$standard_error[
+  rhoystar_registry_row
+] <- rhoystar_estimate$standard_error
+
+
+registry$shock_sd[
+  rhoystar_registry_row
+] <- rhoystar_estimate$shock_sd
+
+
+registry$notes[
+  rhoystar_registry_row
+] <- paste(
+  rhoystar_estimate$notes,
+  paste0(
+    " Detrending window: ",
+    rhoystar_estimate$detrending_sample,
+    ". Robustness estimates: ",
+    "output/estimates/foreign_output_ar1.csv."
+  )
+)
+
 # ---- 8. Safety check: baseline values must remain unchanged ------------------
 
 baseline_after <- registry$baseline_value
