@@ -1,0 +1,13 @@
+// ============================================================
+// Fiscal steady-state shares
+// Historical baseline: Brazil, 1968-1973
+// ============================================================
+
+g_y  = 0.1084101925;
+ig_y = 0.0434353886;
+
+// Definitions:
+// g_y  = government consumption / GDP
+// ig_y = government gross fixed capital formation / GDP
+
+// These are decimal shares of GDP, not percentages.

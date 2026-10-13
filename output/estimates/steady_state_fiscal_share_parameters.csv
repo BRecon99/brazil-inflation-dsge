@@ -1,0 +1,3 @@
+"dynare_name","symbol","estimate","mean_percent_gdp","sample_sd_percent_gdp","mean_se_percent_gdp","minimum_percent_gdp","maximum_percent_gdp","n","sample","method"
+"g_y","G^C/Y",0.108410192506648,10.8410192506648,0.495072561894098,0.202112527048831,9.90641010905354,11.3249958016302,6,"1968-1973","Arithmetic mean of annual government consumption / GDP; 1968-1973; percentage-of-GDP series converted to decimal share"
+"ig_y","I^G/Y",0.0434353885726059,4.34353885726059,0.578204017830937,0.236050801818817,3.70979471506829,5.36690885072655,6,"1968-1973","Arithmetic mean of annual government investment / GDP; 1968-1973; percentage-of-GDP series converted to decimal share"
