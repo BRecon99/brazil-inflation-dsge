@@ -11,6 +11,8 @@ scripts <- c(
   "R/01_world_interest_rate.R",
   "R/02_foreign_output.R",
   "R/03_brazil_inflation_steady_state.R",
+  "R/04_fiscal_processes.R",
+  "R/04i_steady_state_fiscal_shares",
   "R/99_update_parameter_registry.R"
 )
 

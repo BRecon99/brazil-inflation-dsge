@@ -1,0 +1,21 @@
+// ============================================================
+// Fiscal persistence estimates
+// Estimated from annual Brazilian fiscal data, 1947-1980
+// ============================================================
+
+// Original annual persistence estimates:
+// rho_tau_annual = 0.662929
+// rho_g_annual   = 0.236693
+// rho_ig_annual  = 0.558041
+
+// Quarterly-equivalent persistence for quarterly Dynare model:
+rho_tau = 0.902333;
+rho_g   = 0.697503;
+rho_ig  = 0.864304;
+
+// Conversion:
+// rho_quarterly = rho_annual^(1/4)
+
+// IMPORTANT:
+// Annual innovation standard deviations are intentionally
+// NOT converted automatically into quarterly shock std devs.

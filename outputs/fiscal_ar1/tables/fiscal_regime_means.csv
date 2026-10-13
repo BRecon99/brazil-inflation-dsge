@@ -1,0 +1,6 @@
+"series","regime","start_year","end_year","n","mean_pct_gdp","mean_share_gdp"
+"tax","pre_PAEG",1947,1963,17,15.8311502061529,0.158311502061529
+"tax","post_PAEG",1968,1980,13,25.250759705967,0.25250759705967
+"government_consumption","pre_1974",1947,1973,27,11.2235923927629,0.112235923927629
+"government_consumption","post_1974",1974,1980,7,9.73126288750253,0.0973126288750253
+"government_investment","pre_1979_crisis",1947,1978,32,3.78139756714422,0.0378139756714422
