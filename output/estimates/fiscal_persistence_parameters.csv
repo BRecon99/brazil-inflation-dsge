@@ -1,0 +1,4 @@
+"dynare_name","estimate","standard_error","shock_sd","annual_estimate","annual_standard_error","sample","method"
+"rho_tau",0.902332736768704,0.0429150341281256,,0.662928752617061,0.12611582793707,"1947-1963 and 1968-1980","Regime-adjusted annual AR(1); quarterly persistence = annual rho^(1/4)"
+"rho_g",0.697503334451888,0.128998280251595,,0.236692857347916,0.175098641325984,"1947-1973 and 1974-1980","Regime-adjusted annual AR(1); quarterly persistence = annual rho^(1/4)"
+"rho_ig",0.864304193118051,0.0542322738127847,,0.558041477405271,0.140061142558404,"1947-1978","Regime-adjusted annual AR(1); quarterly persistence = annual rho^(1/4)"
