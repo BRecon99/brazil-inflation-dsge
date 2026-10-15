@@ -38,3 +38,19 @@ Add one subsection per raw dataset. Record:
 - date downloaded;
 - license/redistribution note if relevant;
 - any historical coverage caveat.
+
+<!-- BEGIN RHO_F SOURCES -->
+
+## Foreign-price process (`rhoF`)
+
+- `B639RG3Q086SBEA`: BEA/FRED quarterly export price index for industrial supplies and materials. Baseline foreign-price proxy.
+
+- `B686RG3Q086SBEA`: durable industrial supplies/materials. Proxy robustness.
+
+- `B687RG3Q086SBEA`: nondurable industrial supplies/materials. Proxy robustness.
+
+- `B640RG3Q086SBEA`: capital goods except automotive. Diagnostic only because the DSGE does not contain capital.
+
+- `07_setor_externo_1901_00.xls`: historical Brazil external-sector dataset containing the annual import implicit-price index. Used for proxy validation.
+
+<!-- END RHO_F SOURCES -->

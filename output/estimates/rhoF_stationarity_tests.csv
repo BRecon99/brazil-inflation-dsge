@@ -1,0 +1,3 @@
+"test","null_hypothesis","statistic","p_value"
+"ADF","Unit root",-2.94012387854557,0.195698618357617
+"KPSS","Level stationary",0.202423976856294,0.1
