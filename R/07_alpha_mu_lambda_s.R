@@ -977,6 +977,11 @@ print(
 # Source:
 # Miebach & Marquetti (2022), Nova Economia 32(3).
 #
+# The transcription is stored as a versioned raw CSV rather than embedded in
+# R vectors so the historical transcription can be audited independently:
+#
+#   data/raw/miebach_marquetti_2022_labor_share_1967_1972_v1.csv
+#
 # employee_comp_share_pc:
 #   Table 10, "Parc. dos salários (pc)"
 #
@@ -987,31 +992,62 @@ print(
 # intended to represent total labor services, including the labor component
 # of mixed/self-employment income.
 
-labor_source <- data.frame(
-  
-  year = 1967:1972,
-  
-  employee_comp_share_pc = c(
-    0.40023,
-    0.38557,
-    0.37918,
-    0.34228,
-    0.33100,
-    0.34022
-  ),
-  
-  labor_share_adjusted = c(
-    0.5544,
-    0.5411,
-    0.5335,
-    0.4784,
-    0.4464,
-    0.4651
-  ),
-  
-  stringsAsFactors = FALSE
+labor_source_file <- file.path(
+  raw_dir,
+  "miebach_marquetti_2022_labor_share_1967_1972_v1.csv"
 )
 
+if (!file.exists(labor_source_file)) {
+  stop(
+    "Missing versioned Miebach-Marquetti labor-share transcription:\n",
+    labor_source_file
+  )
+}
+
+labor_source <- read.csv(
+  labor_source_file,
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+required_labor_columns <- c(
+  "year",
+  "employee_comp_share_pc",
+  "labor_share_adjusted"
+)
+
+missing_labor_columns <- setdiff(
+  required_labor_columns,
+  names(labor_source)
+)
+
+if (length(missing_labor_columns) > 0) {
+  stop(
+    "Labor-share raw CSV is missing required column(s): ",
+    paste(missing_labor_columns, collapse = ", ")
+  )
+}
+
+labor_source$year <- as.integer(labor_source$year)
+labor_source$employee_comp_share_pc <- suppressWarnings(
+  as.numeric(labor_source$employee_comp_share_pc)
+)
+labor_source$labor_share_adjusted <- suppressWarnings(
+  as.numeric(labor_source$labor_share_adjusted)
+)
+
+if (!identical(sort(labor_source$year), 1967:1972)) {
+  stop(
+    "Miebach-Marquetti raw CSV must contain exactly years 1967-1972."
+  )
+}
+
+if (
+  any(!is.finite(labor_source$employee_comp_share_pc)) ||
+  any(!is.finite(labor_source$labor_share_adjusted))
+) {
+  stop("Non-finite labor-share observations found in versioned raw CSV.")
+}
 
 write.csv(
   labor_source,
@@ -1019,7 +1055,8 @@ write.csv(
     processed_dir,
     "brazil_labor_share_miebach_marquetti_1967_1972.csv"
   ),
-  row.names = FALSE
+  row.names = FALSE,
+  na = ""
 )
 
 # =============================================================================
@@ -1477,256 +1514,12 @@ writeLines(
 )
 
 # =============================================================================
-# 14. UPDATE PARAMETER REGISTRY
+# 14. PARAMETER-OUTPUT ARCHITECTURE
 # =============================================================================
-
-registry_path <- file.path(
-  docs_dir,
-  "parameter_registry.csv"
-)
-
-
-set_if_exists <- function(
-    d,
-    i,
-    col,
-    value
-) {
-  
-  if (col %in% names(d)) {
-    d[i, col] <- value
-  }
-  
-  d
-}
-
-
-update_registry <- function(
-    d,
-    p,
-    value,
-    classification,
-    status,
-    method,
-    sample,
-    source_text,
-    notes
-) {
-  
-  key <- if (
-    "dynare_name" %in% names(d)
-  ) {
-    
-    "dynare_name"
-    
-  } else if (
-    "parameter" %in% names(d)
-  ) {
-    
-    "parameter"
-    
-  } else {
-    
-    return(d)
-  }
-  
-  
-  i <- which(
-    trimws(
-      as.character(
-        d[[key]]
-      )
-    ) == p
-  )
-  
-  
-  if (length(i) != 1) {
-    
-    warning(
-      "Could not identify exactly one registry row for ",
-      p,
-      "."
-    )
-    
-    return(d)
-  }
-  
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "classification",
-    classification
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "research_value",
-    format(
-      value,
-      digits = 12
-    )
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "status",
-    status
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "method",
-    method
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "sample",
-    sample
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "raw_or_primary_data",
-    source_text
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "source_or_literature",
-    source_text
-  )
-  
-  d <- set_if_exists(
-    d,
-    i,
-    "notes",
-    notes
-  )
-  
-  d
-}
-
-
-if (
-  file.exists(
-    registry_path
-  )
-) {
-  
-  registry <- read.csv(
-    registry_path,
-    check.names = FALSE,
-    stringsAsFactors = FALSE
-  )
-  
-  
-  registry <- update_registry(
-    
-    registry,
-    
-    "alpha",
-    
-    alpha_final,
-    
-    "Calibrated",
-    
-    "Calibrated candidate - Script 07",
-    
-    "alpha_t = cf_y_t / c_y_t; annual mean",
-    
-    "1968-1972",
-    
-    paste(
-      "IBGE historical national accounts;",
-      "Doellinger et al. (1974) via Script 06"
-    ),
-    
-    paste0(
-      "alpha is imported consumption as a share of total private consumption. ",
-      "Mean=",
-      fmt(alpha_final),
-      "; median=",
-      fmt(alpha_stats$median),
-      "; annual SD=",
-      fmt(alpha_stats$sd),
-      "."
-    )
-  )
-  
-  
-  registry <- update_registry(
-    
-    registry,
-    
-    "mu",
-    
-    mu_final,
-    
-    "Calibrated",
-    
-    "Calibrated candidate - Script 07",
-    
-    "mu_t = z_y_t/(adjusted labor share_t + z_y_t); annual mean",
-    
-    "1968-1972",
-    
-    paste(
-      "Doellinger et al. (1974) via Script 06;",
-      "Miebach & Marquetti (2022), Tables 10 and 12"
-    ),
-    
-    paste0(
-      "Baseline uses adjusted labor share including labor content of mixed income. ",
-      "Employee-compensation-only robustness mu=",
-      fmt(mu_employee_baseline),
-      "."
-    )
-  )
-  
-  
-  registry <- update_registry(
-    
-    registry,
-    
-    "lambda_s",
-    
-    lambda_s_final,
-    
-    "Derived",
-    
-    "Derived from calibrated alpha and mu - Script 07",
-    
-    "lambda_s = mu + (1-mu)*alpha",
-    
-    "Derived identity",
-    
-    "Current model algebra; alpha and mu from Script 07",
-    
-    paste0(
-      "Not separately estimated. alpha=",
-      fmt(alpha_final),
-      "; mu=",
-      fmt(mu_final),
-      "."
-    )
-  )
-  
-  
-  write.csv(
-    registry,
-    registry_path,
-    row.names = FALSE,
-    na = ""
-  )
-}
+#
+# Script 07 does NOT write docs/parameter_registry.csv.
+# Its machine-readable parameter outputs remain in output/estimates/.
+# Script 99 is the sole registry writer.
 
 # =============================================================================
 # 15. DOCUMENTATION
@@ -1898,7 +1691,7 @@ cat(
 )
 
 cat(
-  "Labor share: Miebach & Marquetti (2022)\n"
+  "Labor share: Miebach & Marquetti (2022), versioned raw CSV v1\n"
 )
 
 cat(
