@@ -1,0 +1,4 @@
+"parameter","value","n","median","annual_sd","min","max","sample","method","interpretation","recommended_baseline"
+"m_y_diagnostic",0.0758806466278141,5,0.0744974776310306,0.00937407534424363,0.0671743725231176,0.0885969455032529,"1968-1972","Arithmetic mean of annual M/Y","Total national-accounts imports as a share of GDP","DIAGNOSTIC"
+"capital_import_y_bridge",0.0289694011121473,5,0.0280855490668985,0.00585255413015512,0.0226455479243907,0.0373879110023728,"1968-1972","Arithmetic mean of annual (M/Y x Doellinger capital-goods share)","Capital-goods import share implied by the composition bridge","DIAGNOSTIC"
+"bridge_residual_y",0.0295688096596199,5,0.029128513753733,0.00603068185306576,0.0226455479243907,0.0380966865663988,"1968-1972","Arithmetic mean of annual M/Y - cf_y - z_y","Imports not explicitly represented by cf_y + z_y","DIAGNOSTIC"

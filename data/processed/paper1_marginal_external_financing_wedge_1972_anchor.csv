@@ -1,0 +1,2 @@
+"year","brazil_spread_over_libor_pp","libor_annual_pct","spread_timing","use","source_spread","source_libor","tb3ms_annual_pct","tb3ms_annual_decimal","brazil_marginal_rate_annual_decimal","brazil_marginal_rate_quarterly_effective","tb3ms_quarterly_effective","rp_anchor_quarterly","rp_anchor_quarterly_bp"
+1972,1.5,6.33,"approximate_midyear","centering_anchor_and_sensitivity_only","CEPAL historical commercial-bank borrowing study","historical LIBOR compilation used in project",4.0725,0.040725,0.0783,0.0190251466683935,0.0100293566455549,0.00899579002283857,89.9579002283857

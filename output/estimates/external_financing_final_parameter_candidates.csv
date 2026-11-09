@@ -1,0 +1,4 @@
+"parameter","value","parameter_type","baseline_status","note"
+"dbar",0.0620343144288253,"Brazil-specific steady-state calibration","ACCEPT","Mean net external debt/GDP, 1970-1972"
+"phiD",0.001,"Quarterly literature calibration","ACCEPT","Small positive debt-elastic premium used for stationarity and long-run debt discipline"
+"phiDD",0,"Removed from baseline","DROP","Do not structurally estimate from sparse 1970s data; remove from Dynare and registry during cleanup"

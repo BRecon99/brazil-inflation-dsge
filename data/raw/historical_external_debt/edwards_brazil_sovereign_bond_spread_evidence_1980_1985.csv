@@ -1,0 +1,7 @@
+"source_id","period","statistic","value_low","value_high","note","use"
+"EDWARDS_1985_BOND_SPREADS","1980-10_to_1982-07","level_description",,,"Brazilian bond spread was close to zero / sometimes negative before the debt crisis","Paper II source evidence; do not mechanically splice with Paper-I bank-loan spreads"
+"EDWARDS_1985_BOND_SPREADS","1982-07_to_1982-10","change_bps",418,418,"Brazil spread increased by 418 bp between July and October 1982","Paper II source evidence; do not mechanically splice with Paper-I bank-loan spreads"
+"EDWARDS_1985_BOND_SPREADS","1982-10_to_1983-04","level_range_bps",280,300,"Brazil spread stabilized around 280-300 bp","Paper II source evidence; do not mechanically splice with Paper-I bank-loan spreads"
+"EDWARDS_1985_BOND_SPREADS","1983-04_to_1984-05","average_level_bps",285,285,"Brazil spread averaged about 285 bp","Paper II source evidence; do not mechanically splice with Paper-I bank-loan spreads"
+"EDWARDS_1985_BOND_SPREADS","1984-05_to_1985-01","change_bps",490,,"Brazil spread climbed by more than 490 bp","Paper II source evidence; do not mechanically splice with Paper-I bank-loan spreads"
+"EDWARDS_1985_BOND_SPREADS","1985-03_to_1985-04","level_description",,,"Spread dropped sharply back toward its earlier 1982-84 range","Paper II source evidence; do not mechanically splice with Paper-I bank-loan spreads"

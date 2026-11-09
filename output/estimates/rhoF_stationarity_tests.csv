@@ -1,3 +1,3 @@
-"test","null_hypothesis","statistic","p_value"
-"ADF","Unit root",-2.94012387854557,0.195698618357617
-"KPSS","Level stationary",0.202423976856294,0.1
+"test","null_hypothesis","statistic","p_value","interpretation_rule"
+"ADF","Unit root",-2.99022142103301,0.175706233977846,"Small p-value rejects unit root"
+"KPSS","Level stationary",0.184226857876307,0.1,"Small p-value rejects level stationarity"

@@ -1,0 +1,7 @@
+"year","capital_goods_pct_of_imports","intermediate_goods_pct_of_imports","consumer_goods_pct_of_imports","other_pct_of_imports","source_id"
+"1968",33.7,53.1,13.2,0,"doellinger_1974_vi2"
+"1969",37,49.5,12.5,1,"doellinger_1974_vi2"
+"1970",37.7,47.5,13.4,1.4,"doellinger_1974_vi2"
+"1971",38.9,45.3,15.1,0.7,"doellinger_1974_vi2"
+"1972",42.2,42.7,14.3,0.8,"doellinger_1974_vi2"
+"MEAN_1968_1972",37.9,47.62,13.7,0.78,"doellinger_1974_vi2"

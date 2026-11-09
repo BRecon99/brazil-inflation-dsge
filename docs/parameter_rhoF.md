@@ -1,97 +1,49 @@
-# Parameter Decision: rhoF
+# Parameter rhoF
 
-## Model parameter
+## Model equation
 
-`rhoF` governs persistence of foreign-price inflation:
+`pif_t = rhoF * pif_{t-1} + eps_pf,t`
 
-```text
-pif_t = rhoF * pif_(t-1) + eps_pf,t
-```
+## Empirical interpretation
 
-## Economic interpretation
+The quarterly persistence parameter is estimated from the BEA/FRED B639 U.S. export-price index for industrial supplies and materials. The observable is quarterly log inflation, not the price-index level.
 
-The model treats imported goods as intermediate production inputs. There is no capital stock in the model.
+Serra (1982), Table 13 provides Brazil-specific annual import-price indexes. The intermediate-goods series is used as the primary historical validation target because it is the closest empirical counterpart to the model's imported-intermediate-input price concept.
 
-The empirical foreign-price proxy therefore targets prices of industrial supplies and materials rather than consumer or capital goods.
+The Brazilian annual series is not used directly to estimate the quarterly Dynare rhoF because temporal aggregation changes the stochastic process. The annual AR coefficient is therefore treated only as a diagnostic.
 
-## Baseline empirical proxy
+## Baseline estimate
 
-`B639RG3Q086SBEA`
+- Sample: 1967Q3-1980Q4
+- rhoF: 0.723969948147
+- OLS SE: 0.09475676
+- HC1 robust SE: 0.10080754
+- Newey-West SE: 0.12046136
+- eps_pf residual shock SD: 0.024292183316
+- Half-life: 2.146 quarters
+- Residual-bootstrap 95% CI: [0.4189, 0.8367]
 
-U.S. exports of goods: industrial supplies and materials, chain-type price index.
+## Primary historical proxy validation: B639 vs Serra intermediate goods
 
-## Historical validation
-
-The quarterly proxy is validated against Brazil's annual historical import implicit-price index.
-
-The Brazilian annual series is not interpolated to quarterly frequency and is not used directly to estimate rhoF.
-
-## Transformation
-
-Quarterly foreign-price inflation is:
-
-```text
-piF_t = log(P_t) - log(P_(t-1))
-```
-
-## Baseline estimation
-
-The empirical AR(1) is:
-
-```text
-piF_t = a + rhoF * piF_(t-1) + u_t
-```
-
-Baseline regression sample:
-
-`1967Q3-1980Q4`
-
-## Estimate
-
-`rhoF = 0.723969948147`
-
-Conventional OLS SE: 0.09475676
-
-HC1 robust SE: 0.10080754
-
-Newey-West SE: 0.12046136
-
-Estimated quarterly shock SD: 0.024292183
-
-Implied half-life: 2.146 quarters.
-
-Residual-bootstrap 95% interval: [0.4295, 0.8316].
+- 1968-1972: n= 5, Pearson=0.7833, Spearman=0.6000
+- 1973-1980: n= 8, Pearson=0.9264, Spearman=0.8810
+- 1968-1980: n=13, Pearson=0.9396, Spearman=0.8187
 
 ## Robustness
 
-- B686: durable industrial supplies/materials.
-- B687: nondurable industrial supplies/materials.
-- B640: capital-goods diagnostic only.
-- Alternative sample ending in 1978Q4.
-- Pre-1973 and 1973-1980 regime diagnostics.
-- Annual-average and Q4/Q4 proxy validation.
-- Pearson and Spearman validation correlations.
-- AR(1) versus AR(2) diagnostic.
-- ADF and KPSS stationarity diagnostics.
+The script reports alternative samples, durable and nondurable industrial-supply proxies, a capital-goods diagnostic, an optional broad-export benchmark, ADF and KPSS stationarity diagnostics, Ljung-Box residual diagnostics, ACF/PACF, AR(1) versus AR(2) AIC/BIC, and a residual bootstrap.
 
-## Reproducibility
+## Dynare mapping
 
-Estimation script:
+`rhoF = 0.723969948147;`
+`stderr eps_pf = 0.024292183316;`
 
-`R/05_foreign_price_process.R`
+## Source hierarchy
 
-Processed quarterly data:
+1. Quarterly estimator: BEA/FRED B639 industrial supplies and materials price index.
+2. Primary historical validation: Serra (1982), Table 13, Brazilian intermediate-goods import-price index.
+3. Secondary historical validation: Serra (1982), Table 13, general Brazilian import-price index.
+4. Proxy robustness: B686 and B687.
+5. Negative/control diagnostic: B640 capital goods.
+6. Optional broad benchmark: broad U.S. export-price series.
 
-`data/processed/foreign_price_quarterly.csv`
-
-Historical validation data:
-
-`data/processed/foreign_price_annual_validation.csv`
-
-Main estimation output:
-
-`output/estimates/rhoF_ar1.csv`
-
-Proxy-validation output:
-
-`output/estimates/rhoF_proxy_validation.csv`

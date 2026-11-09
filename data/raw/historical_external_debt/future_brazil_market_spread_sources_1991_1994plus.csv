@@ -1,0 +1,3 @@
+"period","preferred_measure","verified_start_or_event","use_when","warning"
+"1991-1993","Brazil EMBI / voluntary international-bond spread","Brazil EMBI coverage begins 1991-12-31 in cited research dataset","Build Paper-II late-period / Paper-III pre-Real database","Do not backcast EMBI into the 1980s."
+"1994_onward","Brazil EMBI plus Brady/Eurobond spreads","Brazil Brady restructuring and bond issuance completed in April 1994","Build Paper-III Real Plan database","Document instrument composition and benchmark; prefer standardized spread series where available."

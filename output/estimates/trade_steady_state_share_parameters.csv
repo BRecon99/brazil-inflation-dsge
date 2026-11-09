@@ -1,0 +1,5 @@
+"parameter","value","n","median","annual_sd","min","max","sample","method","interpretation","recommended_baseline"
+"x_y",0.0668556457243049,5,0.067060105680317,0.00509219082807275,0.0596278577072353,0.0727189740610462,"1968-1972","Arithmetic mean of annual same-unit national-accounts X/Y","Exports as a share of GDP","YES"
+"cf_y",0.0104582739749032,5,0.0099826620025581,0.00197176361540299,0.0083967965653897,0.0126693632069652,"1968-1972","Arithmetic mean of annual (M/Y x Doellinger consumer-goods share)","Imported final-consumption goods as a share of GDP","YES"
+"z_y",0.035853562993291,5,0.0356818574120221,0.00176965797379647,0.0332513143989432,0.037830895729889,"1968-1972","Arithmetic mean of annual (M/Y x Doellinger intermediate-goods share)","Imported intermediate goods as a share of GDP","YES"
+"cH_y",0.781298773196441,,,,,,"Derived identity","cH_y = 1 - x_y - g_y - ig_y","Domestic household-consumption weight in domestic output","YES"

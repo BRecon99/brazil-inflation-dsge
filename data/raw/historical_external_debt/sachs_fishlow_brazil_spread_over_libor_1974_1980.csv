@@ -1,0 +1,8 @@
+"source_id","year","brazil_spread_over_libor_pp","status"
+"SACHS_FISHLOW_1981_SPREADS",1974,1.1,"clean_robustness"
+"SACHS_FISHLOW_1981_SPREADS",1975,1.8,"clean_robustness"
+"SACHS_FISHLOW_1981_SPREADS",1976,2,"clean_robustness"
+"SACHS_FISHLOW_1981_SPREADS",1977,2,"clean_robustness"
+"SACHS_FISHLOW_1981_SPREADS",1978,1.7,"clean_robustness"
+"SACHS_FISHLOW_1981_SPREADS",1979,0.9,"clean_robustness"
+"SACHS_FISHLOW_1981_SPREADS",1980,1.75,"1980_source_sensitive"

@@ -1,0 +1,2 @@
+"year","brazil_spread_over_libor_pp","libor_annual_pct","spread_timing","use","source_spread","source_libor"
+1972,1.5,6.33,"approximate_midyear","centering_anchor_and_sensitivity_only","CEPAL historical commercial-bank borrowing study","historical LIBOR compilation used in project"

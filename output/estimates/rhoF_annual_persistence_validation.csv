@@ -1,6 +1,5 @@
-"series","n","annual_rho","standard_error"
-"Brazil import implicit price",12,0.332552251080564,0.329944740496163
-"B639",12,0.298602143926321,0.285972571916976
-"B686",12,0.301619699396568,0.285080893086705
-"B687",12,0.296832211573988,0.286473082872687
-"B640",12,0.478304959608204,0.277993832359451
+"series","role","sample","n","intercept","rho_annual","standard_error","robust_se_HC1","shock_sd","note"
+"Serra intermediate-goods import inflation","Brazil annual full-sample diagnostic","1964-1980",16,0.0664231653317912,0.334134123689829,0.268365557041118,0.403820584931218,0.170545374646435,"Annual-frequency diagnostic only; do not convert mechanically to quarterly rhoF"
+"Serra intermediate-goods import inflation","Brazil annual pre-oil diagnostic","1964-1972",8,0.00507339801697227,-0.107102117121158,0.420506981954503,0.432101896007998,0.0481994384043205,"Annual-frequency diagnostic only; do not convert mechanically to quarterly rhoF"
+"Serra intermediate-goods import inflation","Brazil annual oil-era diagnostic","1973-1980",8,0.158152026509992,0.128651440033414,0.41012352238253,0.414677973113464,0.22917772856142,"Annual-frequency diagnostic only; do not convert mechanically to quarterly rhoF"
+"B639 annualized-average inflation","U.S. annualized diagnostic","1968-1980",12,0.0706805520074943,0.298602143926321,0.285972571916976,0.216065434826067,0.108566498393416,"Annual-frequency diagnostic only; do not convert mechanically to quarterly rhoF"

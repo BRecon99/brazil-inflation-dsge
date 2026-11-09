@@ -1,0 +1,19 @@
+year,fuel_pct,capital_goods_pct,raw_materials_pct,consumer_goods_pct,combined_raw_materials_consumer_pct,combined_capital_raw_materials_consumer_pct,published_total_pct,fuel_definition,comparability_flag,source_note
+1960,14.6,31.0,46.7,7.7,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1961,11.7,31.1,50.6,6.6,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1962,16.8,34.1,42.1,7.0,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1963,16.5,27.4,48.7,7.4,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1964,20.4,23.4,47.4,8.8,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1965,20.3,22.4,48.6,8.7,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1966,16.5,25.8,49.1,8.6,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1967,15.3,28.9,47.9,10.9,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1968,11.5,33.7,41.6,13.6,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1969,11.5,37.0,38.4,13.1,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1970,11.0,37.7,37.0,14.3,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1971,10.4,41.3,40.5,7.8,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1972,9.0,41.0,38.1,11.0,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1973,11.7,34.6,42.1,11.6,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1974,22.4,24.8,45.2,7.6,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1975,23.9,32.3,37.0,6.8,,,100.0,fuel category as published,full_categories,Published components reproduced exactly; some rows do not sum to 100 due to inconsistencies/rounding in the historical table.
+1976,27.1,29.7,,,43.2,,100.0,crude oil only,aggregated_categories,43.2 combines raw materials and consumer goods; fuel figure is crude oil only.
+1977,30.0,,,,,70.0,100.0,crude oil only,aggregated_categories,"70.0 combines capital goods, raw materials and consumer goods; fuel figure is crude oil only."

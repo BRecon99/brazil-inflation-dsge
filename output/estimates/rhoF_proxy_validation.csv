@@ -1,31 +1,61 @@
-"proxy","role","annualization","period","n","pearson_correlation","spearman_correlation"
-"B639","Baseline","avg","1968-1972",5,0.353410529124473,0.6
-"B639","Baseline","avg","1973-1980",8,0.865154986141412,0.880952380952381
-"B639","Baseline","avg","1968-1980",13,0.892289236478143,0.835164835164835
-"B639","Baseline","q4","1968-1972",5,0.191742541241458,0.3
-"B639","Baseline","q4","1973-1980",8,0.760008314765036,0.761904761904762
-"B639","Baseline","q4","1968-1980",13,0.794335786600783,0.642857142857143
-"B686","Robustness","avg","1968-1972",5,0.393291632935822,0.6
-"B686","Robustness","avg","1973-1980",8,0.861726011264,0.785714285714286
-"B686","Robustness","avg","1968-1980",13,0.889808720888121,0.807692307692308
-"B686","Robustness","q4","1968-1972",5,0.275989218667082,0.3
-"B686","Robustness","q4","1973-1980",8,0.763318600415648,0.761904761904762
-"B686","Robustness","q4","1968-1980",13,0.793135517891967,0.642857142857143
-"B687","Robustness","avg","1968-1972",5,0.331635844980011,0.6
-"B687","Robustness","avg","1973-1980",8,0.866804191550983,0.880952380952381
-"B687","Robustness","avg","1968-1980",13,0.89341055568836,0.835164835164835
-"B687","Robustness","q4","1968-1972",5,0.139786125027388,0.3
-"B687","Robustness","q4","1973-1980",8,0.758015843347149,0.761904761904762
-"B687","Robustness","q4","1968-1980",13,0.794352817606664,0.642857142857143
-"B640","Diagnostic","avg","1968-1972",5,-0.836444169694884,-0.8
-"B640","Diagnostic","avg","1973-1980",8,0.205085234873415,0.166666666666667
-"B640","Diagnostic","avg","1968-1980",13,0.313763452035985,0.0934065934065934
-"B640","Diagnostic","q4","1968-1972",5,-0.737951700860974,-0.8
-"B640","Diagnostic","q4","1973-1980",8,0.422192950606322,0.214285714285714
-"B640","Diagnostic","q4","1968-1980",13,0.477498589360736,0.148351648351648
-"broad","Diagnostic","avg","1968-1972",5,-0.0888096604101242,-0.2
-"broad","Diagnostic","avg","1973-1980",8,0.835076050404895,0.80952380952381
-"broad","Diagnostic","avg","1968-1980",13,0.874217603378992,0.741758241758242
-"broad","Diagnostic","q4","1968-1972",5,0.0362843908280909,0
-"broad","Diagnostic","q4","1973-1980",8,0.788110832512175,0.857142857142857
-"broad","Diagnostic","q4","1968-1980",13,0.832414206615052,0.763736263736264
+"proxy","proxy_role","brazil_target","target_role","annualization","period","n","pearson_correlation","spearman_correlation"
+"B639","Baseline","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1972",5,0.783328602491608,0.6
+"B639","Baseline","Serra intermediate-goods import price","PRIMARY historical validation","avg","1973-1980",8,0.926397376576715,0.880952380952381
+"B639","Baseline","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1980",13,0.939556932507479,0.818681318681319
+"B639","Baseline","Serra general import price","SECONDARY historical validation","avg","1968-1972",5,0.109358024333257,0.2
+"B639","Baseline","Serra general import price","SECONDARY historical validation","avg","1973-1980",8,0.888184628076206,0.833333333333333
+"B639","Baseline","Serra general import price","SECONDARY historical validation","avg","1968-1980",13,0.900527021400734,0.692307692307692
+"B639","Baseline","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1972",5,0.436954807526648,0.3
+"B639","Baseline","Serra intermediate-goods import price","PRIMARY historical validation","q4","1973-1980",8,0.837952454159997,0.761904761904762
+"B639","Baseline","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1980",13,0.856959835870989,0.604395604395604
+"B639","Baseline","Serra general import price","SECONDARY historical validation","q4","1968-1972",5,-0.11259297513105,0.1
+"B639","Baseline","Serra general import price","SECONDARY historical validation","q4","1973-1980",8,0.855810458695464,0.785714285714286
+"B639","Baseline","Serra general import price","SECONDARY historical validation","q4","1968-1980",13,0.855981041954894,0.631868131868132
+"B686","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1972",5,0.798222628266454,0.6
+"B686","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","avg","1973-1980",8,0.922757835212821,0.785714285714286
+"B686","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1980",13,0.937010681405875,0.785714285714286
+"B686","Proxy robustness","Serra general import price","SECONDARY historical validation","avg","1968-1972",5,0.139137206152286,0.2
+"B686","Proxy robustness","Serra general import price","SECONDARY historical validation","avg","1973-1980",8,0.882676586986245,0.714285714285714
+"B686","Proxy robustness","Serra general import price","SECONDARY historical validation","avg","1968-1980",13,0.896631230275908,0.648351648351648
+"B686","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1972",5,0.464396919194381,0.3
+"B686","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","q4","1973-1980",8,0.841277697753067,0.761904761904762
+"B686","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1980",13,0.856564338925857,0.604395604395604
+"B686","Proxy robustness","Serra general import price","SECONDARY historical validation","q4","1968-1972",5,-0.022652421532396,0.1
+"B686","Proxy robustness","Serra general import price","SECONDARY historical validation","q4","1973-1980",8,0.855543482595724,0.785714285714286
+"B686","Proxy robustness","Serra general import price","SECONDARY historical validation","q4","1968-1980",13,0.852564767260704,0.631868131868132
+"B687","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1972",5,0.773368936935697,0.6
+"B687","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","avg","1973-1980",8,0.928152384373767,0.880952380952381
+"B687","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1980",13,0.940722895181535,0.818681318681319
+"B687","Proxy robustness","Serra general import price","SECONDARY historical validation","avg","1968-1972",5,0.0944500683700886,0.2
+"B687","Proxy robustness","Serra general import price","SECONDARY historical validation","avg","1973-1980",8,0.890915018366469,0.833333333333333
+"B687","Proxy robustness","Serra general import price","SECONDARY historical validation","avg","1968-1980",13,0.902411204279334,0.692307692307692
+"B687","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1972",5,0.418105846354799,0.3
+"B687","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","q4","1973-1980",8,0.835918447795629,0.761904761904762
+"B687","Proxy robustness","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1980",13,0.856525351602311,0.604395604395604
+"B687","Proxy robustness","Serra general import price","SECONDARY historical validation","q4","1968-1972",5,-0.166072452900246,0.1
+"B687","Proxy robustness","Serra general import price","SECONDARY historical validation","q4","1973-1980",8,0.855615723665462,0.785714285714286
+"B687","Proxy robustness","Serra general import price","SECONDARY historical validation","q4","1968-1980",13,0.857111706296001,0.631868131868132
+"B640","Capital-goods diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1972",5,-0.896828644406228,-1
+"B640","Capital-goods diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","avg","1973-1980",8,0.196005739706029,0.166666666666667
+"B640","Capital-goods diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1980",13,0.268334854462123,-0.0494505494505495
+"B640","Capital-goods diagnostic","Serra general import price","SECONDARY historical validation","avg","1968-1972",5,-0.62244240317772,-0.6
+"B640","Capital-goods diagnostic","Serra general import price","SECONDARY historical validation","avg","1973-1980",8,0.101241165068007,0.0238095238095238
+"B640","Capital-goods diagnostic","Serra general import price","SECONDARY historical validation","avg","1968-1980",13,0.23118204367823,-0.0274725274725275
+"B640","Capital-goods diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1972",5,-0.947645437640272,-0.7
+"B640","Capital-goods diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","q4","1973-1980",8,0.356113021912482,0.214285714285714
+"B640","Capital-goods diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1980",13,0.387909444383813,0.0164835164835165
+"B640","Capital-goods diagnostic","Serra general import price","SECONDARY historical validation","q4","1968-1972",5,-0.574067229679472,-0.5
+"B640","Capital-goods diagnostic","Serra general import price","SECONDARY historical validation","q4","1973-1980",8,0.309031054129944,0.0714285714285714
+"B640","Capital-goods diagnostic","Serra general import price","SECONDARY historical validation","q4","1968-1980",13,0.389664546668649,0.0879120879120879
+"Broad exports","Broad-price diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1972",5,0.46813087656752,0.2
+"Broad exports","Broad-price diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","avg","1973-1980",8,0.898725965389412,0.80952380952381
+"Broad exports","Broad-price diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","avg","1968-1980",13,0.912353251888718,0.675824175824176
+"Broad exports","Broad-price diagnostic","Serra general import price","SECONDARY historical validation","avg","1968-1972",5,-0.281689760278147,-0.6
+"Broad exports","Broad-price diagnostic","Serra general import price","SECONDARY historical validation","avg","1973-1980",8,0.880238830583553,0.738095238095238
+"Broad exports","Broad-price diagnostic","Serra general import price","SECONDARY historical validation","avg","1968-1980",13,0.89559141159106,0.565934065934066
+"Broad exports","Broad-price diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1972",5,0.073919995722571,0.3
+"Broad exports","Broad-price diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","q4","1973-1980",8,0.833253802465775,0.857142857142857
+"Broad exports","Broad-price diagnostic","Serra intermediate-goods import price","PRIMARY historical validation","q4","1968-1980",13,0.856872948098771,0.769230769230769
+"Broad exports","Broad-price diagnostic","Serra general import price","SECONDARY historical validation","q4","1968-1972",5,-0.243801275983078,-0.1
+"Broad exports","Broad-price diagnostic","Serra general import price","SECONDARY historical validation","q4","1973-1980",8,0.882055102326907,0.833333333333333
+"Broad exports","Broad-price diagnostic","Serra general import price","SECONDARY historical validation","q4","1968-1980",13,0.889088829774124,0.71978021978022

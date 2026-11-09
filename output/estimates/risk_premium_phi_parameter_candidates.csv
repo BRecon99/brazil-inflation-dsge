@@ -1,0 +1,3 @@
+"parameter","value","classification","sample","method","accepted_for_dynare"
+"phiD",0.0746306473082421,"Estimated calibration candidate","1971-1980","OLS, no intercept: quarterly-equivalent rp gap on net debt/GDP gap and annual change",FALSE
+"phiDD",-0.147089331296337,"Estimated calibration candidate","1971-1980","OLS, no intercept: quarterly-equivalent rp gap on net debt/GDP gap and annual change",FALSE

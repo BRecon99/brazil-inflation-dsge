@@ -40,17 +40,14 @@ Add one subsection per raw dataset. Record:
 - any historical coverage caveat.
 
 <!-- BEGIN RHO_F SOURCES -->
+## rhoF — foreign intermediate-input price persistence
 
-## Foreign-price process (`rhoF`)
+- **Quarterly estimator:** BEA/FRED B639RG3Q086SBEA, U.S. exports of industrial supplies and materials, chain-type price index.
+- **Proxy robustness:** BEA/FRED B686RG3Q086SBEA and B687RG3Q086SBEA.
+- **Control diagnostic:** BEA/FRED B640RG3Q086SBEA, capital goods except automotive.
+- **Primary Brazilian historical validation:** Serra, José (1982), Table 13, annual Brazilian import-price index for intermediate goods.
+- **Secondary Brazilian validation:** Serra (1982), Table 13, general import-price index.
+- Serra's table reports 1963=100 indexes and identifies Conjuntura Econômica and Mendonça de Barros (1981) as underlying sources; 1981 is Jan-Oct and is excluded from full-year validation.
 
-- `B639RG3Q086SBEA`: BEA/FRED quarterly export price index for industrial supplies and materials. Baseline foreign-price proxy.
-
-- `B686RG3Q086SBEA`: durable industrial supplies/materials. Proxy robustness.
-
-- `B687RG3Q086SBEA`: nondurable industrial supplies/materials. Proxy robustness.
-
-- `B640RG3Q086SBEA`: capital goods except automotive. Diagnostic only because the DSGE does not contain capital.
-
-- `07_setor_externo_1901_00.xls`: historical Brazil external-sector dataset containing the annual import implicit-price index. Used for proxy validation.
-
+Methodological rule: Serra annual data validate the quarterly B639 proxy but do not replace the quarterly rhoF estimator.
 <!-- END RHO_F SOURCES -->

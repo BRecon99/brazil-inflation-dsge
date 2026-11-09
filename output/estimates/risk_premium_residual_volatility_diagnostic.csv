@@ -1,0 +1,4 @@
+"statistic","value","note"
+"baseline_M3_residual_sd_quarterly_rate_units",0.0038165770581507,"Annual observations of a quarterly-equivalent spread; diagnostic only."
+"baseline_M3_RMSE_quarterly_rate_units",0.00363740315201113,"Annual observations of a quarterly-equivalent spread; diagnostic only."
+"usable_directly_as_quarterly_eps_rp_sd",,"NO. A separate quarterly risk-premium/shock identification step is required."

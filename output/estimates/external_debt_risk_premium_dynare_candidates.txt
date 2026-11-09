@@ -1,0 +1,12 @@
+// ================================================================
+// Script 08 external-debt / risk-premium parameter candidates
+// REVIEW BEFORE UPDATING THE .mod FILE
+// ================================================================
+
+dbar = 0.062034314429; // baseline: mean net external debt/GDP, 1970-1972
+
+phiD = 0.074630647308; // provisional M3 candidate; NOT YET ACCEPTED
+phiDD = -0.147089331296; // provisional M3 candidate; NOT YET ACCEPTED
+
+// Do NOT set stderr eps_rp from the annual residual SD.
+// A separate quarterly shock-volatility identification is required.

@@ -1,0 +1,4 @@
+"parameter","value","classification","sample","method"
+"alpha",0.0151301777615144,"Calibrated","1968-1972","Mean annual imported-consumption share: alpha_t = cf_y_t / c_y_t"
+"mu",0.0682787275040418,"Calibrated","1968-1972","Mean annual imported-input variable-cost share: mu_t = z_y_t / (adjusted labor share_t + z_y_t)"
+"lambda_s",0.0823758359810901,"Derived","Derived from baseline alpha and mu","lambda_s = mu + (1-mu)*alpha"

@@ -1,0 +1,6 @@
+"source_id","year","transaction","spread_over_libor_low_pp","spread_over_libor_high_pp","grace_years","maturity_years","model_use"
+"IMF_BANK_RESTRUCTURING_TERMS",1983,"Restructuring",2,2.25,2.5,8,"Paper II contractual-financing validation; not baseline market-risk price"
+"IMF_BANK_RESTRUCTURING_TERMS",1983,"New financing",1.875,2.125,2.5,8,"Paper II contractual-financing validation; not baseline market-risk price"
+"IMF_BANK_RESTRUCTURING_TERMS",1984,"Restructuring",1.75,2,5,9,"Paper II contractual-financing validation; not baseline market-risk price"
+"IMF_BANK_RESTRUCTURING_TERMS",1984,"New financing",1.75,2,5,9,"Paper II contractual-financing validation; not baseline market-risk price"
+"IMF_BANK_RESTRUCTURING_TERMS",1986,"Restructuring",1.125,1.125,5,7,"Paper II contractual-financing validation; not baseline market-risk price"

@@ -1,0 +1,7 @@
+"parameter","specification","value","classification"
+"dbar","Baseline: mean net external debt/GDP, 1970-1972",0.0620343144288253,"Baseline candidate"
+"dbar","Net debt/GDP median, 1970-1972",0.0680622168529145,"Robustness"
+"dbar","Net debt/GDP endpoint, 1972",0.0482163638273291,"Historical initial-condition robustness"
+"dbar","Mean gross external debt/GDP, 1970-1972",0.0893333333333333,"Gross-debt robustness"
+"dbar","Gross debt/GDP median, 1970-1972",0.09,"Gross-debt robustness"
+"dbar","Gross debt/GDP endpoint, 1972",0.086,"Historical initial-condition robustness"
