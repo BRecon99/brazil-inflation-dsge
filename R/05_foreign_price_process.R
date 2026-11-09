@@ -2602,232 +2602,51 @@ bootstrap_upper <-
   bootstrap_ci[3]
 
 # =============================================================================
-# 15. UPDATE PARAMETER REGISTRY
+# 15. WRITE COMPACT rhoF PARAMETER OUTPUT
 # =============================================================================
+#
+# Script 99 is the sole writer of docs/parameter_registry.csv.
+# Script 05 exposes its accepted result through one compact machine-readable
+# parameter file for downstream consolidation.
 
-registry_path <- file.path(
-  docs_dir,
-  "parameter_registry.csv"
+rhoF_parameter_output <- data.frame(
+  dynare_name = "rhoF",
+  symbol = "rho_F",
+  estimate = rhoF_final,
+  standard_error = rhoF_se,
+  shock_sd = eps_pf_sd,
+  sample = baseline_row$sample,
+  method = paste(
+    "Quarterly AR(1) on B639 log inflation;",
+    "Serra intermediate-goods import prices used as primary annual historical validation"
+  ),
+  raw_or_primary_data = paste(
+    "B639RG3Q086SBEA quarterly;",
+    "Serra (1982) Table 13 annual intermediate-goods import-price index"
+  ),
+  source_or_literature = "BEA/FRED B639; Serra (1982), Table 13",
+  status = "FIRST-STAGE ESTIMATE COMPLETE",
+  notes = paste0(
+    "HC1 SE=", format(rhoF_hc1, digits = 10),
+    "; Newey-West SE=", format(rhoF_nw, digits = 10),
+    "; bootstrap 95% CI=[", format(bootstrap_lower, digits = 10),
+    ", ", format(bootstrap_upper, digits = 10), "]",
+    "; quarterly estimator retained for quarterly Dynare model."
+  ),
+  stringsAsFactors = FALSE
 )
 
+rhoF_parameter_output_file <- file.path(
+  estimates_dir,
+  "foreign_price_process_parameters.csv"
+)
 
-set_if_column_exists <- function(
-    df,
-    row_id,
-    column,
-    value
-) {
-  
-  if (
-    column %in%
-    names(df)
-  ) {
-    
-    df[
-      row_id,
-      column
-    ] <- value
-  }
-  
-  df
-}
-
-
-if (
-  file.exists(
-    registry_path
-  )
-) {
-  
-  registry <- read.csv(
-    
-    registry_path,
-    
-    check.names = FALSE,
-    
-    stringsAsFactors = FALSE
-  )
-  
-  
-  row_id <- integer(0)
-  
-  
-  if (
-    "dynare_name" %in%
-    names(registry)
-  ) {
-    
-    row_id <- which(
-      trimws(
-        registry$dynare_name
-      ) == "rhoF"
-    )
-  }
-  
-  
-  if (
-    length(row_id) == 0 &&
-    "parameter" %in%
-    names(registry)
-  ) {
-    
-    row_id <- which(
-      trimws(
-        registry$parameter
-      ) == "rhoF"
-    )
-  }
-  
-  
-  if (
-    length(row_id) == 1
-  ) {
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "classification",
-      "Estimated"
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "research_value",
-      format(
-        rhoF_final,
-        digits = 12
-      )
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "status",
-      "Estimated - accepted first-stage candidate"
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "method",
-      paste(
-        "Quarterly AR(1) on B639 log inflation;",
-        "Serra intermediate-goods prices used as",
-        "primary annual historical validation"
-      )
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "sample",
-      "1967Q3-1980Q4"
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "raw_or_primary_data",
-      paste(
-        "B639RG3Q086SBEA quarterly;",
-        "Serra (1982) Table 13 annual",
-        "intermediate-goods import-price index"
-      )
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "source_or_literature",
-      "BEA/FRED B639; Serra (1982), Table 13"
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "standard_error",
-      format(
-        rhoF_se,
-        digits = 10
-      )
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "shock_sd",
-      format(
-        eps_pf_sd,
-        digits = 10
-      )
-    )
-    
-    
-    registry <- set_if_column_exists(
-      registry,
-      row_id,
-      "notes",
-      paste0(
-        "Quarterly estimator retained because Dynare model is quarterly. ",
-        "Brazil-specific Serra intermediate-goods annual prices validate ",
-        "the proxy but do not replace quarterly rhoF. ",
-        "HC1 SE=",
-        format(
-          rhoF_hc1,
-          digits = 5
-        ),
-        "; Newey-West SE=",
-        format(
-          rhoF_nw,
-          digits = 5
-        ),
-        "; bootstrap 95% CI=[",
-        format(
-          bootstrap_lower,
-          digits = 5
-        ),
-        ", ",
-        format(
-          bootstrap_upper,
-          digits = 5
-        ),
-        "]."
-      )
-    )
-    
-    
-    write.csv(
-      registry,
-      registry_path,
-      row.names = FALSE,
-      na = ""
-    )
-    
-    
-    cat(
-      "\nUpdated parameter registry row for rhoF.\n"
-    )
-    
-  } else {
-    
-    warning(
-      paste(
-        "Parameter registry was found, but exactly one",
-        "rhoF row could not be identified.",
-        "Registry was not modified."
-      )
-    )
-  }
-}
+write.csv(
+  rhoF_parameter_output,
+  rhoF_parameter_output_file,
+  row.names = FALSE,
+  na = ""
+)
 
 # =============================================================================
 # 16. UPDATE DATA DICTIONARY
@@ -3821,7 +3640,7 @@ cat(
 )
 
 cat(
-  " - docs/parameter_registry.csv (if compatible row exists)\n"
+  " - output/estimates/foreign_price_process_parameters.csv\n"
 )
 
 cat(
