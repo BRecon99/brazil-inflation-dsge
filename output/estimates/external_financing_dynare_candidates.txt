@@ -1,0 +1,12 @@
+// ================================================================
+// External debt / financing wedge - final baseline candidates
+// ================================================================
+
+dbar = 0.062034314429; // mean net external debt/GDP, 1970-1972
+phiD = 0.001000000000; // quarterly SOE literature calibration; stationarity role
+
+// FINAL risk-premium equation:
+// rp = phiD*d + eps_rp;
+
+// Historical financing variation is carried primarily by eps_rp,
+// disciplined by observed marginal external-financing wedges.

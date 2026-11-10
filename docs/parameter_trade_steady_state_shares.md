@@ -31,5 +31,5 @@ Capital-goods imports remain explicit diagnostics and are not silently reclassif
 
 ## Derived cH_y
 
-cH_y = 1 - x_y - g_y - ig_y = 0.781299.
+cH_y = 1 - x_y - g_y - ig_y = 0.778162.
 

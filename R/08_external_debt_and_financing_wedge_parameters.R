@@ -12,13 +12,12 @@
 #
 #   rp_t = phiD * d_t + eps_rp,t
 #
-# We DROP phiDD from the baseline model.
+# phiDD is not part of the live model specification.
 #
 # Parameter strategy:
 #
 #   dbar  -> Brazil-specific historical calibration
 #   phiD  -> small positive quarterly SOE literature calibration
-#   phiDD -> zero / remove from final model
 #   rp_t  -> historically disciplined EXTERNAL FINANCING WEDGE
 #
 #
@@ -102,7 +101,6 @@
 #
 #   dbar
 #   phiD
-#   phiDD = 0 cleanup flag
 #   Paper-I annual marginal financing wedge, 1974-1980
 #   1972 approximate pre-shock centering anchor
 #   implied annual historical eps_rp observations
@@ -122,12 +120,11 @@ options(stringsAsFactors = FALSE)
 
 processed_dir <- file.path("data", "processed")
 raw_debt_dir  <- file.path("data", "raw", "historical_external_debt")
-raw_fred_dir  <- file.path("data", "raw", "fred")
 output_dir    <- file.path("output", "estimates")
 figure_dir    <- file.path("output", "figures")
 docs_dir      <- "docs"
 
-for (d in c(processed_dir, raw_debt_dir, raw_fred_dir, output_dir, figure_dir, docs_dir)) {
+for (d in c(processed_dir, raw_debt_dir, output_dir, figure_dir, docs_dir)) {
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
 }
 
@@ -157,12 +154,24 @@ aiolfi_file <- file.path(
   "aiolfi_catao_timmermann_brazil_effective_external_cost_spread.csv"
 )
 
+world_rate_quarterly_file <- file.path(
+  processed_dir,
+  "world_interest_rate_quarterly.csv"
+)
+
+world_rate_parameter_file <- file.path(
+  output_dir,
+  "world_interest_rate_parameters.csv"
+)
+
 
 required_files <- c(
   master_file,
   bacha_file,
   sachs_file,
-  anchor_file
+  anchor_file,
+  world_rate_quarterly_file,
+  world_rate_parameter_file
 )
 
 missing_files <- required_files[!file.exists(required_files)]
@@ -370,7 +379,6 @@ phiD_low <- 0.0001
 
 phiD_high <- 0.0100
 
-phiDD <- 0
 
 
 phiD_calibration <- data.frame(
@@ -378,29 +386,25 @@ phiD_calibration <- data.frame(
   parameter = c(
     "phiD_low",
     "phiD",
-    "phiD_high",
-    "phiDD"
+    "phiD_high"
   ),
   
   value = c(
     phiD_low,
     phiD,
-    phiD_high,
-    phiDD
+    phiD_high
   ),
   
   status = c(
     "robustness",
     "BASELINE quarterly literature calibration",
-    "robustness",
-    "removed_from_baseline_model"
+    "robustness"
   ),
   
   source_or_reason = c(
     "one-tenth baseline sensitivity",
     "quarterly SOE debt-elastic risk-premium calibration comparable to Schmitt-Grohe-Uribe",
-    "ten-times baseline sensitivity",
-    "dropped because the Brazilian contemporaneous estimate is timing/endogeneity sensitive and lacks a clean structural interpretation"
+    "ten-times baseline sensitivity"
   ),
   
   stringsAsFactors = FALSE
@@ -433,112 +437,104 @@ anchor <- read.csv(
 
 
 # =============================================================================
-# 6. LOAD / DOWNLOAD TB3MS
+# 6. LOAD WORLD RATE FROM SCRIPT 01 OUTPUT
 # =============================================================================
 #
-# The model world-rate block was already disciplined using TB3MS.
+# Dependency rule:
+#   Script 08 does NOT read or download TB3MS raw data.
+#   Script 01 owns the world-rate data construction.
 #
-# We preserve that choice.
+# Script 01 output:
+#   data/processed/world_interest_rate_quarterly.csv
 #
+# Required columns:
+#   year
+#   annual_percent
+#   quarterly_rate
+#
+# For the annual historical financing-wedge tables below, the annual TB3MS
+# observation is the arithmetic mean of Script 01's quarterly averages.
+# Because the historical source has three monthly observations per quarter,
+# this reproduces the annual mean of the underlying monthly series without
+# duplicating raw-data ingestion here.
 
-fred_local_file <- file.path(
-  raw_fred_dir,
-  "TB3MS_1964_1980.csv"
-)
-
-
-fred_download_url <- paste0(
-  "https://fred.stlouisfed.org/graph/fredgraph.csv?",
-  "id=TB3MS&cosd=1964-01-01&coed=1980-12-31"
-)
-
-
-if (!file.exists(fred_local_file)) {
-  
-  message(
-    "Local TB3MS raw file not found. Downloading from FRED..."
-  )
-  
-  tryCatch(
-    utils::download.file(
-      fred_download_url,
-      fred_local_file,
-      method = "libcurl",
-      mode = "wb",
-      quiet = TRUE
-    ),
-    error = function(e) {
-      stop(
-        "Could not download TB3MS and no local file is available. ",
-        conditionMessage(e)
-      )
-    }
-  )
-}
-
-
-tb3ms_raw <- read.csv(
-  fred_local_file,
+world_rate_quarterly <- read.csv(
+  world_rate_quarterly_file,
   stringsAsFactors = FALSE,
   check.names = FALSE
 )
 
+required_world_rate_columns <- c(
+  "year",
+  "annual_percent",
+  "quarterly_rate"
+)
 
-date_candidates <- intersect(
-  names(tb3ms_raw),
-  c(
-    "DATE",
-    "observation_date",
-    "date"
+missing_world_rate_columns <- setdiff(
+  required_world_rate_columns,
+  names(world_rate_quarterly)
+)
+
+if (length(missing_world_rate_columns)) {
+  stop(
+    "Script 01 world-rate output is missing required column(s): ",
+    paste(missing_world_rate_columns, collapse = ", ")
   )
-)
-
-
-if (length(date_candidates) != 1) {
-  stop("Could not identify the TB3MS date column uniquely.")
 }
 
+world_rate_quarterly$year <- as.integer(
+  world_rate_quarterly$year
+)
 
-if (!("TB3MS" %in% names(tb3ms_raw))) {
-  stop("TB3MS value column not found.")
+world_rate_quarterly$annual_percent <- suppressWarnings(
+  as.numeric(world_rate_quarterly$annual_percent)
+)
+
+world_rate_quarterly$quarterly_rate <- suppressWarnings(
+  as.numeric(world_rate_quarterly$quarterly_rate)
+)
+
+if (
+  any(!is.finite(world_rate_quarterly$annual_percent)) ||
+  any(!is.finite(world_rate_quarterly$quarterly_rate))
+) {
+  stop(
+    "Non-finite values found in Script 01 world-rate output."
+  )
 }
-
-
-tb3ms_raw$date <- as.Date(
-  tb3ms_raw[[date_candidates[1]]]
-)
-
-
-tb3ms_raw$tb3ms_pct <- suppressWarnings(
-  as.numeric(tb3ms_raw$TB3MS)
-)
-
-
-tb3ms_raw$year <- as.integer(
-  format(tb3ms_raw$date, "%Y")
-)
-
 
 tb3ms_annual <- aggregate(
-  tb3ms_pct ~ year,
-  data = tb3ms_raw[is.finite(tb3ms_raw$tb3ms_pct), , drop = FALSE],
+  annual_percent ~ year,
+  data = world_rate_quarterly,
   FUN = mean
 )
 
-
-names(tb3ms_annual)[names(tb3ms_annual) == "tb3ms_pct"] <-
+names(tb3ms_annual)[names(tb3ms_annual) == "annual_percent"] <-
   "tb3ms_annual_pct"
-
 
 tb3ms_annual$tb3ms_annual_decimal <-
   tb3ms_annual$tb3ms_annual_pct / 100
-
 
 tb3ms_annual$tb3ms_quarterly_effective <-
   effective_quarterly(
     tb3ms_annual$tb3ms_annual_decimal
   )
 
+# Read the compact parameter output as a dependency/provenance check.
+world_rate_parameters <- read.csv(
+  world_rate_parameter_file,
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+if (
+  !("dynare_name" %in% names(world_rate_parameters)) ||
+  !all(c("rhoiw", "rstar_ss") %in% world_rate_parameters$dynare_name)
+) {
+  stop(
+    "Script 01 parameter output must contain rhoiw and rstar_ss."
+  )
+}
 
 # =============================================================================
 # 7. PAPER-I BASELINE MARGINAL FINANCING WEDGE
@@ -926,32 +922,27 @@ external_financing_parameters <- data.frame(
   
   parameter = c(
     "dbar",
-    "phiD",
-    "phiDD"
+    "phiD"
   ),
   
   value = c(
     dbar,
-    phiD,
-    phiDD
+    phiD
   ),
   
   parameter_type = c(
     "Brazil-specific steady-state calibration",
-    "Quarterly literature calibration",
-    "Removed from baseline"
+    "Quarterly literature calibration"
   ),
   
   baseline_status = c(
     "ACCEPT",
-    "ACCEPT",
-    "DROP"
+    "ACCEPT"
   ),
   
   note = c(
     "Mean net external debt/GDP, 1970-1972",
-    "Small positive debt-elastic premium used for stationarity and long-run debt discipline",
-    "Do not structurally estimate from sparse 1970s data; remove from Dynare and registry during cleanup"
+    "Small positive debt-elastic premium used for stationarity and long-run debt discipline"
   ),
   
   stringsAsFactors = FALSE
@@ -1054,31 +1045,14 @@ write.csv(
 
 
 # =============================================================================
-# 15. DYNARE CLEANUP / CANDIDATE FILE
+# 15. DYNARE CANDIDATE FILE
 # =============================================================================
 #
-# Temporary compatibility:
-#
-# Until the model is cleaned, phiDD may still exist as a declared parameter.
-# If needed to run the old file before cleanup, set phiDD = 0.
-#
-# FINAL cleanup:
-#
-#   remove phiDD from
-#     - parameter declaration
-#     - parameter assignment
-#     - rp equation
-#     - parameter registry
-#     - scripts / documentation
-#
-# and change:
-#
-#   rp = phiD*d + phiDD*(d-d(-1)) + eps_rp;
-#
-# to:
+# Final live risk-premium specification:
 #
 #   rp = phiD*d + eps_rp;
 #
+# phiDD is not emitted, assigned, or treated as a parameter by this script.
 
 dynare_lines <- c(
   
@@ -1099,30 +1073,22 @@ dynare_lines <- c(
   
   "",
   
-  "// TEMPORARY ONLY if old model still declares phiDD:",
-  "phiDD = 0;",
-  
-  "",
-  
-  "// FINAL risk-premium equation after cleanup:",
+  "// FINAL risk-premium equation:",
   "// rp = phiD*d + eps_rp;",
   
   "",
   
-  "// IMPORTANT:",
   "// Historical financing variation is carried primarily by eps_rp,",
   "// disciplined by observed marginal external-financing wedges."
 )
-
 
 writeLines(
   dynare_lines,
   file.path(
     output_dir,
-    "external_financing_dynare_cleanup_candidates.txt"
+    "external_financing_dynare_candidates.txt"
   )
 )
-
 
 # =============================================================================
 # 16. METHODOLOGY NOTE
@@ -1140,7 +1106,7 @@ method_note <- c(
   
   "",
   
-  "phiDD is dropped.",
+  "The previous phiDD term has been removed from the live model architecture.",
   
   "",
   
@@ -1466,13 +1432,12 @@ cat(
 
 cat(
   paste(
-    "1) Change rp equation to: rp = phiD*d + eps_rp;",
-    "2) Remove phiDD from Dynare declarations and assignments;",
-    "3) Remove phiDD from the parameter registry and documentation;",
-    "4) Keep the 1970s bespoke phiD/phiDD regressions as archived diagnostics, not baseline estimation;",
-    "5) During the final registry cleanup also fix the previously identified duplicate fiscal aliases",
+    "1) Use the final rp equation: rp = phiD*d + eps_rp;",
+    "2) phiDD is not a live parameter and must not re-enter Dynare or the registry;",
+    "3) Keep any old 1970s phiD/first-difference regressions only as archived diagnostics;",
+    "4) During the final registry cleanup also fix the previously identified duplicate fiscal aliases",
     "   rhotau/rho_tau, rhoG/rho_g, rhoIG/rho_ig and retain Dynare names;",
-    "6) Verify g_y and ig_y baseline rows use 1968-1972, with 1968-1973 only as robustness.",
+    "5) Verify g_y and ig_y baseline rows use 1968-1972, with 1968-1973 only as robustness.",
     sep = "\n"
   )
 )
@@ -1488,3 +1453,4 @@ cat(
     "\n"
   )
 )
+

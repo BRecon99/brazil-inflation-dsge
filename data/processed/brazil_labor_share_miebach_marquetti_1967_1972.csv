@@ -1,7 +1,7 @@
-"year","employee_comp_share_pc","labor_share_adjusted"
-1967,0.40023,0.5544
-1968,0.38557,0.5411
-1969,0.37918,0.5335
-1970,0.34228,0.4784
-1971,0.331,0.4464
-1972,0.34022,0.4651
+"year","employee_comp_share_pc","labor_share_adjusted","source","table_employee_comp","table_adjusted","version"
+1967,0.40023,0.5544,"Miebach & Marquetti (2022), Nova Economia 32(3)","Table 10: Parc. dos salários (pc)","Table 12: Parcela salarial","v1"
+1968,0.38557,0.5411,"Miebach & Marquetti (2022), Nova Economia 32(3)","Table 10: Parc. dos salários (pc)","Table 12: Parcela salarial","v1"
+1969,0.37918,0.5335,"Miebach & Marquetti (2022), Nova Economia 32(3)","Table 10: Parc. dos salários (pc)","Table 12: Parcela salarial","v1"
+1970,0.34228,0.4784,"Miebach & Marquetti (2022), Nova Economia 32(3)","Table 10: Parc. dos salários (pc)","Table 12: Parcela salarial","v1"
+1971,0.331,0.4464,"Miebach & Marquetti (2022), Nova Economia 32(3)","Table 10: Parc. dos salários (pc)","Table 12: Parcela salarial","v1"
+1972,0.34022,0.4651,"Miebach & Marquetti (2022), Nova Economia 32(3)","Table 10: Parc. dos salários (pc)","Table 12: Parcela salarial","v1"

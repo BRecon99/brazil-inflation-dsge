@@ -1079,217 +1079,150 @@ if (!is.null(fob)) {
 }
 
 # =============================================================================
-# 12. DERIVE cH_y IF g_y AND ig_y ARE ALREADY AVAILABLE
+# 12. DERIVE cH_y FROM SCRIPT 04i OUTPUT
 # =============================================================================
+#
+# Dependency rule:
+#   Script 06 reads g_y and ig_y directly from the machine-readable output of
+#   Script 04i. It does NOT read docs/parameter_registry.csv.
+#
+# Required file:
+#   output/estimates/steady_state_fiscal_share_parameters.csv
 
-registry_path <- file.path(docs_dir, "parameter_registry.csv")
+fiscal_share_file <- file.path(
+  "output",
+  "estimates",
+  "steady_state_fiscal_share_parameters.csv"
+)
 
-read_existing_parameter <- function(parameter_name) {
-  candidate_files <- c(
-    registry_path,
-    file.path("output", "estimates", "steady_state_fiscal_share_parameters.csv"),
-    file.path("output", "steady_state_fiscal_share_parameters.csv"),
-    file.path("outputs", "steady_state_fiscal_share_parameters.csv")
+if (!file.exists(fiscal_share_file)) {
+  stop(
+    "Missing Script 04i output: ",
+    fiscal_share_file,
+    "\nRun R/04i_steady_state_fiscal_shares.R first."
+  )
+}
+
+fiscal_params <- read.csv(
+  fiscal_share_file,
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+required_fiscal_columns <- c(
+  "dynare_name",
+  "estimate"
+)
+
+missing_fiscal_columns <- setdiff(
+  required_fiscal_columns,
+  names(fiscal_params)
+)
+
+if (length(missing_fiscal_columns) > 0) {
+  stop(
+    "Script 04i output is missing required column(s): ",
+    paste(missing_fiscal_columns, collapse = ", ")
+  )
+}
+
+read_fiscal_parameter <- function(parameter_name) {
+  idx <- which(
+    trimws(as.character(fiscal_params$dynare_name)) == parameter_name
   )
   
-  candidate_files <- candidate_files[file.exists(candidate_files)]
-  
-  for (f in candidate_files) {
-    d <- tryCatch(
-      read.csv(f, check.names = FALSE, stringsAsFactors = FALSE),
-      error = function(e) NULL
+  if (length(idx) != 1) {
+    stop(
+      "Expected exactly one ",
+      parameter_name,
+      " row in ",
+      fiscal_share_file,
+      "; found ",
+      length(idx),
+      "."
     )
-    
-    if (is.null(d)) next
-    
-    key_col <- c("dynare_name", "parameter", "name")
-    key_col <- key_col[key_col %in% names(d)]
-    
-    value_col <- c(
-      "research_value",
-      "value",
-      "baseline_value",
-      "calibrated_value",
-      "estimate"
-    )
-    value_col <- value_col[value_col %in% names(d)]
-    
-    if (length(key_col) == 0 || length(value_col) == 0) next
-    
-    idx <- which(
-      trimws(as.character(d[[key_col[1]]])) == parameter_name
-    )
-    
-    if (length(idx) != 1) next
-    
-    value <- as_number_safe(d[[value_col[1]]][idx])
-    
-    if (length(value) == 1 && is.finite(value)) {
-      return(value)
-    }
   }
   
-  NA_real_
-}
-
-g_y  <- read_existing_parameter("g_y")
-ig_y <- read_existing_parameter("ig_y")
-x_y  <- params$value[params$parameter == "x_y"]
-
-cH_y <- NA_real_
-
-if (is.finite(g_y) && is.finite(ig_y)) {
-  cH_y <- 1 - x_y - g_y - ig_y
+  value <- suppressWarnings(
+    as.numeric(fiscal_params$estimate[idx])
+  )
   
-  params <- rbind(
-    params,
-    data.frame(
-      parameter = "cH_y",
-      value = cH_y,
-      n = NA_integer_,
-      median = NA_real_,
-      annual_sd = NA_real_,
-      min = NA_real_,
-      max = NA_real_,
-      sample = "Derived identity",
-      method = "cH_y = 1 - x_y - g_y - ig_y",
-      interpretation = "Domestic household-consumption weight in domestic output",
-      recommended_baseline = "YES",
-      stringsAsFactors = FALSE
+  if (length(value) != 1 || !is.finite(value)) {
+    stop(
+      "Non-finite ",
+      parameter_name,
+      " value in ",
+      fiscal_share_file,
+      "."
     )
-  )
-  
-  write.csv(
-    params,
-    file.path(estimates_dir, "trade_steady_state_share_parameters.csv"),
-    row.names = FALSE,
-    na = ""
-  )
-}
-
-# =============================================================================
-# 13. UPDATE PARAMETER REGISTRY, CONSERVATIVELY
-# =============================================================================
-
-set_if_column_exists <- function(df, row_id, column, value) {
-  if (column %in% names(df)) {
-    df[row_id, column] <- value
   }
-  df
+  
+  value
 }
 
-if (file.exists(registry_path)) {
-  registry <- read.csv(
-    registry_path,
-    check.names = FALSE,
+g_y <- read_fiscal_parameter("g_y")
+ig_y <- read_fiscal_parameter("ig_y")
+x_y <- params$value[params$parameter == "x_y"]
+
+if (length(x_y) != 1 || !is.finite(x_y)) {
+  stop("Could not identify exactly one finite x_y estimate.")
+}
+
+cH_y <- 1 - x_y - g_y - ig_y
+
+if (!is.finite(cH_y) || cH_y <= 0 || cH_y >= 1) {
+  stop(
+    "Derived cH_y is outside (0,1): ",
+    cH_y,
+    ". Check Script 04i and Script 06 inputs."
+  )
+}
+
+# Accepted target after the 04i baseline correction to 1968-1972.
+expected_cH_y <- 0.7781620666
+
+if (abs(cH_y - expected_cH_y) > 1e-8) {
+  warning(
+    "Derived cH_y differs from the expected post-04i target. ",
+    "Calculated=", format(cH_y, digits = 12),
+    "; expected approximately ", expected_cH_y, "."
+  )
+}
+
+params <- rbind(
+  params,
+  data.frame(
+    parameter = "cH_y",
+    value = cH_y,
+    n = NA_integer_,
+    median = NA_real_,
+    annual_sd = NA_real_,
+    min = NA_real_,
+    max = NA_real_,
+    sample = "Derived identity",
+    method = "cH_y = 1 - x_y - g_y - ig_y",
+    interpretation = "Domestic household-consumption weight in domestic output",
+    recommended_baseline = "YES",
     stringsAsFactors = FALSE
   )
-  
-  key_col <- if ("dynare_name" %in% names(registry)) {
-    "dynare_name"
-  } else if ("parameter" %in% names(registry)) {
-    "parameter"
-  } else {
-    NA_character_
-  }
-  
-  if (!is.na(key_col)) {
-    update_one <- function(registry, p, value, method, sample, note, classification = "Calibrated") {
-      idx <- which(trimws(as.character(registry[[key_col]])) == p)
-      
-      if (length(idx) != 1) {
-        warning(
-          "Registry update skipped for ", p,
-          ": expected exactly one row, found ", length(idx), "."
-        )
-        return(registry)
-      }
-      
-      registry <- set_if_column_exists(registry, idx, "classification", classification)
-      registry <- set_if_column_exists(
-        registry,
-        idx,
-        "research_value",
-        format(value, digits = 12)
-      )
-      registry <- set_if_column_exists(
-        registry,
-        idx,
-        "status",
-        "Calibrated candidate - review Script 06 diagnostics"
-      )
-      registry <- set_if_column_exists(registry, idx, "method", method)
-      registry <- set_if_column_exists(registry, idx, "sample", sample)
-      registry <- set_if_column_exists(
-        registry,
-        idx,
-        "raw_or_primary_data",
-        "IBGE historical national accounts I.2.1; Doellinger et al. (1974), Table VI.2"
-      )
-      registry <- set_if_column_exists(
-        registry,
-        idx,
-        "source_or_literature",
-        "IBGE historical national accounts; Doellinger, Faria & Cavalcanti (1974)"
-      )
-      registry <- set_if_column_exists(registry, idx, "notes", note)
-      
-      registry
-    }
-    
-    for (p in c("x_y", "cf_y", "z_y")) {
-      r <- params[params$parameter == p, ]
-      
-      note <- if (p == "x_y") {
-        paste0(
-          "Direct same-unit national-accounts ratio. 1968-1972 mean; median=",
-          sprintf("%.6f", r$median),
-          "; annual SD=", sprintf("%.6f", r$annual_sd), "."
-        )
-      } else {
-        paste0(
-          "1968-1972 calibration bridge from national-accounts M/Y and ",
-          "Doellinger merchandise-import composition. Median=",
-          sprintf("%.6f", r$median),
-          "; annual SD=", sprintf("%.6f", r$annual_sd),
-          ". Capital-goods imports are not folded into z_y."
-        )
-      }
-      
-      registry <- update_one(
-        registry,
-        p,
-        r$value,
-        r$method,
-        "1968-1972",
-        note
-      )
-    }
-    
-    if (is.finite(cH_y)) {
-      registry <- update_one(
-        registry,
-        "cH_y",
-        cH_y,
-        "cH_y = 1 - x_y - g_y - ig_y",
-        "Steady-state identity",
-        paste0(
-          "Derived using x_y=", sprintf("%.6f", x_y),
-          ", g_y=", sprintf("%.6f", g_y),
-          ", ig_y=", sprintf("%.6f", ig_y), "."
-        ),
-        classification = "Derived"
-      )
-    }
-    
-    write.csv(
-      registry,
-      registry_path,
-      row.names = FALSE,
-      na = ""
-    )
-  }
-}
+)
+
+write.csv(
+  params,
+  file.path(estimates_dir, "trade_steady_state_share_parameters.csv"),
+  row.names = FALSE,
+  na = ""
+)
+
+# =============================================================================
+# 13. PARAMETER-OUTPUT ARCHITECTURE
+# =============================================================================
+#
+# Script 06 writes parameter candidates only to:
+#
+#   output/estimates/trade_steady_state_share_parameters.csv
+#
+# Script 99 is the sole writer of docs/parameter_registry.csv.
 
 # =============================================================================
 # 14. DOCUMENTATION
@@ -1507,7 +1440,7 @@ cat(" - output/estimates/trade_steady_state_share_diagnostics.csv\n")
 cat(" - output/estimates/trade_steady_state_share_robustness.csv\n")
 cat(" - output/figures/trade_steady_state_shares_1967_1972.png\n")
 cat(" - docs/parameter_trade_steady_state_shares.md\n")
-cat(" - docs/parameter_registry.csv (if compatible)\n")
+cat(" - registry NOT modified; Script 99 is the sole registry writer\n")
 
 if (!is.null(fob)) {
   cat(" - data/processed/brazil_imports_by_use_fob_1967_1972.csv\n")
@@ -1520,3 +1453,4 @@ cat(
   "before marking cf_y and z_y final.\n",
   sep = ""
 )
+

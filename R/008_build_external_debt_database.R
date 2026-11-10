@@ -10,8 +10,6 @@
 # This script does NOT estimate:
 #   dbar
 #   phiD
-#   phiDD
-#   phiD
 #   a causal country-risk equation
 #   a debt equation
 #
@@ -275,6 +273,13 @@ bcb_json_url <- paste0(
   "https://api.bcb.gov.br/dados/serie/bcdata.sgs.",
   bcb_series_id,
   "/dados?formato=json"
+)
+
+# Local cache written by this script after a successful official download.
+# It is also accepted as a fallback when the BCB endpoint is unavailable.
+bcb_local_cache_file <- file.path(
+  raw_debt_dir,
+  "bcb_sgs3560_registered_external_debt_1964_1980.csv"
 )
 
 # -----------------------------------------------------------------------------
@@ -552,6 +557,57 @@ if (
 }
 
 # -----------------------------------------------------------------------------
+# Attempt 3: local previously validated cache
+# -----------------------------------------------------------------------------
+
+if (
+  is.null(bcb_all) ||
+  !nrow(bcb_all)
+) {
+  
+  if (file.exists(bcb_local_cache_file)) {
+    
+    message(
+      "Official BCB endpoints unavailable. Trying local SGS 3560 cache..."
+    )
+    
+    cached_bcb <- tryCatch(
+      read.csv(
+        bcb_local_cache_file,
+        stringsAsFactors = FALSE,
+        check.names = FALSE
+      ),
+      error = function(e) NULL
+    )
+    
+    if (
+      !is.null(cached_bcb) &&
+      all(
+        c(
+          "date",
+          "registered_external_debt_usd_million"
+        ) %in% names(cached_bcb)
+      )
+    ) {
+      
+      bcb_all <- data.frame(
+        date = as.Date(cached_bcb$date),
+        value = suppressWarnings(
+          as.numeric(
+            cached_bcb$registered_external_debt_usd_million
+          )
+        ),
+        stringsAsFactors = FALSE
+      )
+      
+      message(
+        "Local SGS 3560 cache loaded successfully."
+      )
+    }
+  }
+}
+
+# -----------------------------------------------------------------------------
 # Validate and filter BCB data
 # -----------------------------------------------------------------------------
 
@@ -697,6 +753,45 @@ if (
     )
   }
   
+  # Deterministic local validation.
+  #
+  # These checks are intentionally simple and transparent rather than
+  # cryptographic: they detect the historical decimal-parsing failures that
+  # previously turned values such as 6621.3 into 66213.
+  expected_bcb_years <- 1964:1980
+  expected_bcb_sum <- 299560.1
+  expected_bcb_weighted_sum <- 3977069.8
+  
+  bcb_checksum_sum <- sum(
+    bcb_3560$registered_external_debt_usd_million,
+    na.rm = TRUE
+  )
+  
+  bcb_checksum_weighted <- sum(
+    seq_len(nrow(bcb_3560)) *
+      bcb_3560$registered_external_debt_usd_million,
+    na.rm = TRUE
+  )
+  
+  if (
+    identical(bcb_3560$year, expected_bcb_years) &&
+    (
+      abs(bcb_checksum_sum - expected_bcb_sum) > 1e-6 ||
+      abs(bcb_checksum_weighted - expected_bcb_weighted_sum) > 1e-6
+    )
+  ) {
+    stop(
+      paste(
+        "BCB SGS 3560 checksum validation failed.",
+        "Expected sum=", expected_bcb_sum,
+        "and weighted sum=", expected_bcb_weighted_sum,
+        "but obtained", bcb_checksum_sum,
+        "and", bcb_checksum_weighted, ".",
+        "Check decimal parsing or the cached/downloaded source."
+      )
+    )
+  }
+  
   # Historical cross-check against independent literature.
   historical_check <- data.frame(
     
@@ -794,10 +889,7 @@ if (
 
 write.csv(
   bcb_3560,
-  file.path(
-    raw_debt_dir,
-    "bcb_sgs3560_registered_external_debt_1964_1980.csv"
-  ),
+  bcb_local_cache_file,
   row.names = FALSE,
   na = ""
 )
@@ -2607,7 +2699,7 @@ readme <- c(
   
   paste(
     "Review the source comparison and definitions before selecting dbar or",
-    "estimating phiD / phiDD. Do not update the Dynare model from Script 008."
+    "calibrating phiD. phiDD is not a live model parameter. Do not update the Dynare model from Script 008."
   ),
   
   ""
@@ -2833,6 +2925,7 @@ cat(
   paste(
     "Review the source definitions and the cross-source comparison.",
     "Only after that should Script 08 decide the empirical counterpart to d_t,",
-    "calculate dbar, and investigate phiD / phiDD / borrowing-cost proxies.\n"
+    "calculate dbar, calibrate phiD, and construct borrowing-cost proxies.\n"
   )
 )
+

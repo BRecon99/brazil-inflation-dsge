@@ -2,4 +2,3 @@
 "phiD_low",1e-04,"robustness","one-tenth baseline sensitivity"
 "phiD",0.001,"BASELINE quarterly literature calibration","quarterly SOE debt-elastic risk-premium calibration comparable to Schmitt-Grohe-Uribe"
 "phiD_high",0.01,"robustness","ten-times baseline sensitivity"
-"phiDD",0,"removed_from_baseline_model","dropped because the Brazilian contemporaneous estimate is timing/endogeneity sensitive and lacks a clean structural interpretation"

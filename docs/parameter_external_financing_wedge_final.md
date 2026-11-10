@@ -3,7 +3,7 @@
 ## Structural equation
 rp_t = phiD*d_t + eps_rp,t
 
-phiDD is dropped.
+The previous phiDD term has been removed from the live model architecture.
 
 ## dbar
 dbar is calibrated as mean net external debt/GDP over 1970-1972. Gross debt/GDP is retained as robustness.

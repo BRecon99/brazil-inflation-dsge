@@ -16,5 +16,5 @@ No synthetic risk-premium series is created in Script 008. Historical evidence i
 The official BCB SGS 3560 series is downloaded directly when internet access is available. Historical paper tables are manually transcribed into explicit source-specific data frames so they can be audited against the original published tables.
 
 ## Next step
-Review the source comparison and definitions before selecting dbar or estimating phiD / phiDD. Do not update the Dynare model from Script 008.
+Review the source comparison and definitions before selecting dbar or calibrating phiD. phiDD is not a live model parameter. Do not update the Dynare model from Script 008.
 
